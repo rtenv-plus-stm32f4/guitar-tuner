@@ -1,0 +1,13 @@
+target remote :3333
+define show_environment_variables
+   echo Current environment variables:\n
+   set $r0=0
+   while $r0<env_count
+      printf "Name: %s; Value: %s\n", env_var[$r0].name, env_var[$r0].value
+      set $r0++
+   end
+end
+document show_environment_variables
+   Show all environment variables. The count depends on env_count.
+end
+set logging 

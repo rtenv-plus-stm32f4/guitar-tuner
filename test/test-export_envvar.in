@@ -1,0 +1,31 @@
+set logging on
+set strcpy(env_var[0].name, "EDITOR")
+set strcpy(env_var[0].value, "gedit")
+set strcpy(env_var[1].name, "PATH")
+set strcpy(env_var[1].value, "~")
+set strcpy(env_var[2].name, "LC_ALL")
+set strcpy(env_var[2].value, "UTF8")
+set env_count=3
+set strcpy(cmd[0], "export")
+set strcpy(cmd[1], "EDITOR=vi")
+show_environment_variables
+echo Processed argv list:\n
+set $r0=0
+set $sp=$sp-2*sizeof(char*)
+while $r0<2
+   printf "#%d %s\n", $r0, cmd[$r0]
+   set ((char**)$sp)[$r0]=cmd[$r0]
+   set $r0++
+end
+call export_envvar(2, (char**)$sp)
+if !strcmp(env_var[0].value, cmd[1]+7)
+   echo Pass: exported value is correct\n
+else
+   printf "Fail: %s=%s, shall be %s\n", env_var[0].name, env_var[0].value, cmd[1]+7
+end
+if env_count==3
+   echo Pass: correct value of env_count\n
+else
+   printf "Fail: env_count is %d, shall be 3\n", env_count
+end
+

@@ -1,0 +1,19 @@
+set logging on
+set strcpy(cmd[0], "12")
+set strcpy(cmd[1], "13")
+printf "Compared strings: \"%s\", \"%s\"\n", cmd[0], cmd[1]
+echo strncmp of length 1:\n
+set $r0=strncmp(cmd[0], cmd[1], 1)
+if !$r0
+   echo Pass: strncmp returns 0\n
+else
+   printf "Fail: strncmp returns %d, shall be 0\n", $r0
+end
+echo strncmp of length 2:\n
+set $r0=strncmp(cmd[0], cmd[1], 2)
+if $r0
+   echo Pass: strncmp returns nonzero\n
+else
+   echo Fail: strncmp returns 0\n
+end
+

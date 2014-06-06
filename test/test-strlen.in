@@ -1,0 +1,14 @@
+set logging on
+set $r0=strlen("man")
+if $r0==3
+   echo Pass: strlen("man") is 3\n
+else
+   printf "Fail: strlen(\"man\") is %d, shall be 3\n", $r0
+end
+set $r0=strlen("")
+if $r0==0
+   echo Pass: strlen("") is 0\n
+else
+   printf "Fail: strlen(\"\") is %d, shall be 0\n", $r0
+end
+

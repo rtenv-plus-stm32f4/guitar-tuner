@@ -1,0 +1,24 @@
+set logging on
+set strcpy(cmd[0], "echo -n \"A B\"")
+set strcpy(cmd[1], "echo")
+set strcpy(cmd[2], "-n")
+set strcpy(cmd[3], "A B")
+printf "Processed command: %s\n", cmd[0]
+echo Tokens:\n
+set $r0=1
+while $r0<=3
+   printf "#%d \"%s\"\n", $r0, cmd[$r0]
+   set $r0++
+end
+set $r0=cmdtok(cmd[0])
+set $r1=1
+while $r0
+   printf "Testing token: \"%s\"\n", cmd[$r1]
+   if !strcmp($r0, cmd[$r1++])
+      echo Pass: this token is correct\n
+   else
+      printf "Fail: cmdtok returns \"%s\", shall be \"%s\"\n", $r0, cmd[$r1]
+   end
+   set $r0=cmdtok(NULL)
+end
+

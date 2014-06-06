@@ -1,0 +1,28 @@
+set logging on
+set strcpy(env_var[0].name, "EDITOR")
+set strcpy(env_var[0].value, "vi")
+set strcpy(env_var[1].name, "PATH")
+set strcpy(env_var[1].value, "~")
+set strcpy(env_var[2].name, "LC_ALL")
+set strcpy(env_var[2].value, "UTF8")
+set env_count=3
+show_environment_variables
+set $r0=0
+while $r0<3
+   printf "Searching: \"%s\"\n", env_var[$r0].value
+   set $r1=find_envvar(env_var[$r0].name)
+   if !strcmp($r1, env_var[$r0].value)
+      echo Pass: correct value\n
+   else
+      printf "Fail: \"%s\" is found, shall be \"%s\"\n", $r1, env_var[$r0].value
+   end
+   set $r0++
+end
+echo Searching for an undefined environment variable:\n
+set $r1=find_envvar("EMPTY")
+if !$r1
+   echo Pass: this variable is not found\n
+else
+   printf "Fail: EMPTY=%s, shall not be found\n", $r1
+end
+

@@ -1,0 +1,17 @@
+set logging on
+if !strcmp(itoa(0), "0")
+   echo Pass: itoa correctly converts 0 into "0"\n
+else
+   printf "Fail: itoa converts 0 into \"%s\", shall be \"0\"\n", cmd[0]
+end
+if !strcmp(itoa(-32768), "-32768")
+   echo Pass: itoa correctly converts -32768 into "-32768"\n
+else
+   printf "Fail: itoa converts -32768 into \"%s\", shall be \"-32768\"\n", cmd[0]
+end
+if !strcmp(itoa(32767), "32767")
+   echo Pass: itoa correctly converts 32767 into "32767"\n
+else
+   printf "Fail: itoa converts 32767 into \"%s\", shall be \"32767\"\n", cmd[0]
+end
+

@@ -1,0 +1,14 @@
+set logging on
+set my_strcpy(cmd[0], "ps")
+if cmd[0][0]=='p' && cmd[0][1]=='s'
+   echo Pass: "ps" was successfully copied\n
+else
+   printf "Fail: the copy is \"%s\", shall be \"ps\"\n", cmd[0]
+end
+set strcpy(cmd[0], "")
+if cmd[0][0]=='\0'
+   echo Pass: empty string was successfully copied\n
+else
+   printf "Fail: the copy is \"%s\", shall be \"\"\n", cmd[0]
+end
+

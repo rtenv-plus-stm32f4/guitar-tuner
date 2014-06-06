@@ -1,0 +1,29 @@
+set logging on
+set strcpy(cmd[0], "help")
+set strcpy(cmd[1], "echo Hello!")
+set strcpy(cmd[2], "history")
+set strcpy(cmd[3], "!e")
+set cur_his=3
+echo Current history:\n
+set $r0=0
+while $r0<cur_his
+   printf "#%d %s\n", $r0, cmd[$r0]
+   set $r0++
+end
+printf "Processed command: %s\n", cmd[3]
+call find_events()
+if !strcmp(cmd[3], cmd[1])
+   echo Pass: the latest command starting with e is found\n
+else
+   printf "Fail: \"%s\" is found, shall be \"%s\"\n", cmd[3], cmd[1]
+end
+set strcpy(cmd[4], "!h")
+set cur_his=4
+printf "Processed command: %s\n", cmd[4]
+call find_events()
+if !strcmp(cmd[4], cmd[2])
+   echo Pass: the latest command starting with h is found\n
+else
+   printf "Fail: \"%s\" is found, shall be \"%s\"\n", cmd[4], cmd[2]
+end
+

@@ -1,0 +1,24 @@
+set logging on
+set strcpy(cmd[0], "def")
+set strcpy(cmd[1], "def")
+set $r0=strcmp(cmd[0], cmd[1])
+if !$r0
+   printf "Pass: strcmp(\"%s\", \"%s\") is 0\n", cmd[0], cmd[1]
+else
+   printf "Fail: strcmp(\"%s\", \"%s\") is %d, shall be 0\n", cmd[0], cmd[1], $r0
+end
+set cmd[0][0]='c'
+set $r0=strcmp(cmd[0], cmd[1])
+if $r0<0
+   printf "Pass: strcmp(\"%s\", \"%s\") returns negative value\n", cmd[0], cmd[1]
+else
+   printf "Fail: strcmp(\"%s\", \"%s\") is %d, shall be negative\n", cmd[0], cmd[1], $r0
+end
+set cmd[0][0]='g'
+set $r0=strcmp(cmd[0], cmd[1])
+if $r0>0
+   printf "Pass: strcmp(\"%s\", \"%s\") returns positive value\n", cmd[0], cmd[1]
+else
+   printf "Fail: strcmp(\"%s\", \"%s\") is %d, shall be positive\n", cmd[0], cmd[1], $r0
+end
+

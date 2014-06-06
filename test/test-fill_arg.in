@@ -1,0 +1,24 @@
+set logging on
+set strcpy(env_var[0].name, "EDITOR")
+set strcpy(env_var[0].value, "vi")
+set strcpy(env_var[1].name, "PATH")
+set strcpy(env_var[1].value, "~")
+set strcpy(env_var[2].name, "LC_ALL")
+set strcpy(env_var[2].value, "UTF8")
+set env_count=3
+set strcpy(cmd[0], "PATH=/:$PATH")
+show_environment_variables
+printf "Processed argument: %s\n", cmd[0]
+set $r0=fill_arg(cmd[1], cmd[0])
+set strcpy(cmd[0]+7, env_var[1].value)
+if !strcmp(cmd[1], cmd[0])
+   echo Pass: replaced string is correct\n
+else
+   printf "Fail: fill_arg results in \"%s\", shall be \"%s\"\n", cmd[1], cmd[0]
+end
+if $r0==strlen(cmd[1])
+   echo Pass: correct returned value\n
+else
+   printf "Fail: fill_arg returns %d, shall be length of replaced string\n", $r0
+end
+
