@@ -18,6 +18,7 @@ PLAT = STM32F4xx
 LIBDIR = .
 CMSIS_LIB=$(LIBDIR)/libraries/CMSIS
 STM32_LIB=$(LIBDIR)/libraries/STM32F4xx_StdPeriph_Driver
+UTIL_LIB=$(LIBDIR)/libraries/Utilities
 
 CMSIS_PLAT_SRC = $(CMSIS_LIB)/Device/$(VENDOR)/$(PLAT)
 
@@ -26,10 +27,12 @@ OUTDIR = build
 SRCDIR = src \
          $(CMSIS_LIB)/CoreSupport \
          $(STM32_LIB)/src \
+		 $(UTIL_LIB)/STM32F429I-Discovery \
          $(CMSIS_PLAT_SRC)/Source/Templates
 INCDIR = include \
          $(CMSIS_LIB)/Include \
          $(STM32_LIB)/inc \
+		 $(UTIL_LIB)/STM32F429I-Discovery \
          $(CMSIS_PLAT_SRC)/Include
 INCLUDES = $(addprefix -I,$(INCDIR))
 DATDIR = data
