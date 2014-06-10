@@ -18,6 +18,7 @@
 #include "romdev.h"
 #include "event-monitor.h"
 #include "romfs.h"
+#include "ui.h"
 
 #define MAX_CMDNAME 19
 #define MAX_ARGC 19
@@ -282,6 +283,11 @@ void serial_test_task()
 		}
 		check_keyword();	
 	}
+}
+
+void UI_task()
+{
+    ui_init();
 }
 
 /* Split command into tokens. */
@@ -705,12 +711,7 @@ void show_xxd(int argc, char *argv[])
 void first()
 {
 	if (!fork()) setpriority(0, 0), pathserver();
-	if (!fork()) setpriority(0, 0), romdev_driver();
-	if (!fork()) setpriority(0, 0), romfs_server();
-	if (!fork()) setpriority(0, 0), serialout(USART2, USART2_IRQn);
-	if (!fork()) setpriority(0, 0), serialin(USART2, USART2_IRQn);
-	if (!fork()) rs232_xmit_msg_task();
-	if (!fork()) setpriority(0, PRIORITY_DEFAULT - 10), serial_test_task();
+	if (!fork()) setpriority(0, 0), UI_task();
 
 	setpriority(0, PRIORITY_LIMIT);
 
@@ -924,9 +925,9 @@ int main()
 		case 0x9: /* sleep */
 			if (tasks[current_task].stack->r0 != 0) {
 				tasks[current_task].stack->r0 += tick_count;
-				tasks[current_task].status = TASK_WAIT_TIME;
 			    event_monitor_block(&event_monitor, TIME_EVENT,
 			                        &tasks[current_task]);
+				tasks[current_task].status = TASK_WAIT_TIME;
 			}
 			break;
 		case 0xa: /* lseek */
