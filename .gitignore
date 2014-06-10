@@ -5,3 +5,5 @@ main.map
 /build
 /data
 *~
+*.o
+*.d
