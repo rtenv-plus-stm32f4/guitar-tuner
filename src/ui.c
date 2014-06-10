@@ -1,6 +1,6 @@
 #include "stm32f429i_discovery_lcd.h"
-#include <string.h>
 #include "syscall.h"
+#include <string.h>
 
 static uint8_t sound[8][2] = {"A", "B", "C", "D", "E", "F", "G", "H"};
 static uint8_t hz_str[3] = "Hz";
@@ -34,8 +34,8 @@ static uint8_t* itoa(int value, uint8_t* result, int base)
 
 void ui_bfclear()
 {
-	//memset((void *) LCD_FRAME_BUFFER, 0xff, BUFFER_OFFSET);
 	memset((void *) LCD_FRAME_BUFFER + BUFFER_OFFSET, 0xff, BUFFER_OFFSET);
+	//memset((void *) LCD_FRAME_BUFFER, 0xff, BUFFER_OFFSET);
 }
 
 
@@ -46,6 +46,8 @@ void ui_start_tuner()
     itoa(hz, frequency_str, 10);
     strcat((char *)frequency_str, (char *)hz_str);
 
+    LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
+
     while(1){
 
         ui_bfclear();
@@ -53,7 +55,11 @@ void ui_start_tuner()
         LCD_DisplayStringLine(LCD_LINE_3, sound[3]);
         LCD_DisplayStringLine(LCD_LINE_5, frequency_str);
 
-        sleep(30);
+        LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
+        LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
+        LCD_DrawLine(220, 180, 40, LCD_DIR_VERTICAL);
+
+        sleep(1220);
     }
 }
 
@@ -69,8 +75,6 @@ void ui_init()
     LCD_DisplayOn();
 
     LCD_SetLayer(LCD_FOREGROUND_LAYER);
-
-    LCD_SetColors(LCD_COLOR_BLUE, LCD_COLOR_RED);
 
     ui_start_tuner();
 }
