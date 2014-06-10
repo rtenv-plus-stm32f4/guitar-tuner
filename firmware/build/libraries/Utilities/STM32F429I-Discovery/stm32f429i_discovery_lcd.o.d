@@ -1,10 +1,6 @@
-build/OS_kernel/src/kernel.o: OS_kernel/src/kernel.c \
- OS_kernel/include/kconfig.h OS_kernel/include/kernel.h \
- OS_kernel/include/task.h OS_kernel/include/kconfig.h \
- OS_kernel/include/list.h OS_kernel/include/utils.h \
- OS_kernel/include/file.h OS_kernel/include/event-monitor.h \
- OS_kernel/include/memory-pool.h OS_kernel/include/stm32_p103.h \
- OS_kernel/include/RTOSConfig.h \
+build/./libraries/Utilities/STM32F429I-Discovery/stm32f429i_discovery_lcd.o: \
+ libraries/Utilities/STM32F429I-Discovery/stm32f429i_discovery_lcd.c \
+ libraries/Utilities/STM32F429I-Discovery/stm32f429i_discovery_lcd.h \
  libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h \
  libraries/CMSIS/Include/core_cm4.h \
  libraries/CMSIS/Include/core_cmInstr.h \
@@ -40,10 +36,8 @@ build/OS_kernel/src/kernel.o: OS_kernel/src/kernel.c \
  libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h \
  libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_wwdg.h \
  libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h \
- OS_kernel/include/syscall.h OS_kernel/include/string.h \
- OS_kernel/include/task.h OS_kernel/include/memory-pool.h \
- OS_kernel/include/path.h OS_kernel/include/pipe.h \
- OS_kernel/include/fifo.h OS_kernel/include/mqueue.h \
- OS_kernel/include/block.h OS_kernel/include/romdev.h \
- OS_kernel/include/event-monitor.h OS_kernel/include/romfs.h \
- OS_kernel/include/ui.h
+ libraries/Utilities/STM32F429I-Discovery/stm32f429i_discovery.h \
+ libraries/Utilities/STM32F429I-Discovery/stm32f429i_discovery_sdram.h \
+ libraries/Utilities/STM32F429I-Discovery/../Common/fonts.h \
+ libraries/Utilities/STM32F429I-Discovery/../Common/fonts.c \
+ libraries/Utilities/STM32F429I-Discovery/../Common/fonts.h
