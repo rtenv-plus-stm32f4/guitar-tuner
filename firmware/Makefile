@@ -23,11 +23,11 @@ CMSIS_PLAT_SRC = $(CMSIS_LIB)/Device/$(VENDOR)/$(PLAT)
 
 
 OUTDIR = build
-SRCDIR = src \
+SRCDIR = OS_kernel/src \
          $(CMSIS_LIB)/CoreSupport \
          $(STM32_LIB)/src \
          $(CMSIS_PLAT_SRC)/Source/Templates
-INCDIR = include \
+INCDIR = OS_kernel/include \
          $(CMSIS_LIB)/Include \
          $(STM32_LIB)/inc \
          $(CMSIS_PLAT_SRC)/Include
