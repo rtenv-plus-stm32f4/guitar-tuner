@@ -6,4 +6,6 @@
 #include "event-monitor.h"
 #include <stddef.h>
 
+void rtenv_start_scheduler();
+
 #endif

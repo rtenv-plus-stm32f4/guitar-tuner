@@ -285,11 +285,6 @@ void serial_test_task()
 	}
 }
 
-void UI_task()
-{
-    ui_init();
-}
-
 /* Split command into tokens. */
 char *cmdtok(char *cmd)
 {
@@ -707,19 +702,6 @@ void show_xxd(int argc, char *argv[])
     }
 }
 
-
-void first()
-{
-	if (!fork()) setpriority(0, 0), pathserver();
-	if (!fork()) setpriority(0, 0), UI_task();
-
-	setpriority(0, PRIORITY_LIMIT);
-
-	mount("/dev/rom0", "/", ROMFS_TYPE, 0);
-
-	while(1);
-}
-
 #define INTR_EVENT(intr) (FILE_LIMIT + (intr) + 15) /* see INTR_LIMIT */
 #define INTR_EVENT_REVERSE(event) ((event) - FILE_LIMIT - 15)
 #define TIME_EVENT (FILE_LIMIT + INTR_LIMIT)
@@ -746,7 +728,7 @@ struct list ready_list[PRIORITY_LIMIT + 1];  /* [0 ... 39] */
 struct event events[EVENT_LIMIT];
 
 
-int main()
+void rtenv_start_scheduler(void (*start)())
 {
 	//struct task_control_block tasks[TASK_LIMIT];
 	struct memory_pool memory_pool;
@@ -789,7 +771,7 @@ int main()
 	event_monitor_register(&event_monitor, TIME_EVENT, time_release, &tick_count);
 
     /* Initialize first thread */
-	tasks[task_count].stack = (void*)init_task(stacks[task_count], &first);
+	tasks[task_count].stack = (void*)init_task(stacks[task_count], start);
 	tasks[task_count].pid = 0;
 	tasks[task_count].priority = PRIORITY_DEFAULT;
 	list_init(&tasks[task_count].list);
@@ -984,6 +966,4 @@ int main()
 		task = list_entry(list, struct task_control_block, list);
 		current_task = task->pid;
 	}
-
-	return 0;
 }
