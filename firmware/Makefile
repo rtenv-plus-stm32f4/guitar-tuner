@@ -24,12 +24,14 @@ CMSIS_PLAT_SRC = $(CMSIS_LIB)/Device/$(VENDOR)/$(PLAT)
 
 
 OUTDIR = build
-SRCDIR = OS_kernel/src \
+SRCDIR = ./ \
+	 OS_kernel/src \
          $(CMSIS_LIB)/CoreSupport \
          $(STM32_LIB)/src \
 		 $(UTIL_LIB)/STM32F429I-Discovery \
          $(CMSIS_PLAT_SRC)/Source/Templates
-INCDIR = OS_kernel/include \
+INCDIR = ./ \
+	 OS_kernel/include \
          $(CMSIS_LIB)/Include \
          $(STM32_LIB)/inc \
 		 $(UTIL_LIB)/STM32F429I-Discovery \

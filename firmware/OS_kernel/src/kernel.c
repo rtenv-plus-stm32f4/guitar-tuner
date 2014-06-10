@@ -746,7 +746,7 @@ struct list ready_list[PRIORITY_LIMIT + 1];  /* [0 ... 39] */
 struct event events[EVENT_LIMIT];
 
 
-int main()
+void rtenv_start_scheduler()
 {
 	//struct task_control_block tasks[TASK_LIMIT];
 	struct memory_pool memory_pool;
@@ -984,6 +984,4 @@ int main()
 		task = list_entry(list, struct task_control_block, list);
 		current_task = task->pid;
 	}
-
-	return 0;
 }
