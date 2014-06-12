@@ -5,7 +5,7 @@
 #define DEFAULT_BEAT_CNT 4
 
 extern int metronome_bpm;
-extern int beat_count;
+extern int metronome_beat_count;
 
 void buzzer_init();
 void beep(int frequency);
