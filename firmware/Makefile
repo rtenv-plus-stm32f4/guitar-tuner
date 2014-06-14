@@ -4,6 +4,7 @@ TARGET = main
 CROSS_COMPILE ?= arm-none-eabi-
 CC := $(CROSS_COMPILE)gcc
 CFLAGS = -fno-common -ffreestanding -O0 \
+		 -lm \
 			-fno-builtin \
          -gdwarf-2 -g3 -Wall -Werror \
          -mcpu=cortex-m4 -mthumb \
@@ -27,6 +28,7 @@ CMSIS_DSP_SRC = $(CMSIS_LIB)/DSP_Lib/Source
 DSP_TRANS_FUNC_SRC = $(CMSIS_DSP_SRC)/TransformFunctions
 DSP_CPLX_FUNC_SRC = $(CMSIS_DSP_SRC)/ComplexMathFunctions
 DSP_STATICS_FUNC_SRC = $(CMSIS_DSP_SRC)/StatisticsFunctions
+DSP_COMMON_TABLE_SRC = $(CMSIS_DSP_SRC)/CommonTables
 
 
 OUTDIR = build
@@ -35,10 +37,7 @@ SRCDIR = ./ \
          $(CMSIS_LIB)/CoreSupport \
          $(STM32_LIB)/src \
 		 $(UTIL_LIB)/STM32F429I-Discovery \
-         $(CMSIS_PLAT_SRC)/Source/Templates \
-		 $(DSP_TRANS_FUNC_SRC)/arm_cfft_f32.c \
-		 $(DSP_CPLX_FUNC_SRC)/arm_cmplx_mag_f32.c \
-		 $(DSP_STATICS_FUNC_SRC)/arm_max_f32.c
+         $(CMSIS_PLAT_SRC)/Source/Templates
 INCDIR = ./ \
 	 OS_kernel/include \
          $(CMSIS_LIB)/Include \
@@ -51,7 +50,13 @@ TOOLDIR = tool
 
 SRC = $(wildcard $(addsuffix /*.c,$(SRCDIR))) \
       $(wildcard $(addsuffix /*.s,$(SRCDIR))) \
-      $(CMSIS_PLAT_SRC)/Source/Templates/gcc_ride7/startup_stm32f429_439xx.s
+      $(CMSIS_PLAT_SRC)/Source/Templates/gcc_ride7/startup_stm32f429_439xx.s \
+	  $(DSP_TRANS_FUNC_SRC)/arm_cfft_f32.c \
+	  $(DSP_TRANS_FUNC_SRC)/arm_cfft_radix8_f32.c \
+	  $(DSP_TRANS_FUNC_SRC)/arm_bitreversal2.s \
+	  $(DSP_CPLX_FUNC_SRC)/arm_cmplx_mag_f32.c \
+	  $(DSP_STATICS_FUNC_SRC)/arm_max_f32.c \
+	  $(DSP_COMMON_TABLE_SRC)/arm_common_tables.c
 OBJ := $(addprefix $(OUTDIR)/,$(patsubst %.s,%.o,$(SRC:.c=.o)))
 DEP = $(OBJ:.o=.o.d)
 DAT =
