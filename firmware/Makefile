@@ -9,6 +9,7 @@ CFLAGS = -fno-common -ffreestanding -O0 \
          -mcpu=cortex-m4 -mthumb \
          -Wl,-Tmain.ld -nostartfiles \
          -DUSER_NAME=\"$(USER)\" \
+		 -DARM_MATH_CM4 \
          -DSTM32F429_439xx -DUSE_STDPERIPH_DRIVER -march=armv7e-m -mtune=cortex-m4 -mlittle-endian
 
 ARCH = CM4

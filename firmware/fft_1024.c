@@ -1,8 +1,5 @@
 #include "fft_1024.h"
 
-/* Using CMSIS libray for Cortex-CM4 */
-#define ARM_MATH_CM4
-
 #include "arm_math.h"
 #include "arm_const_structs.h"
 
