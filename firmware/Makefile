@@ -21,6 +21,11 @@ STM32_LIB=$(LIBDIR)/libraries/STM32F4xx_StdPeriph_Driver
 UTIL_LIB=$(LIBDIR)/libraries/Utilities
 
 CMSIS_PLAT_SRC = $(CMSIS_LIB)/Device/$(VENDOR)/$(PLAT)
+CMSIS_DSP_SRC = $(CMSIS_LIB)/DSP_Lib/Source
+
+DSP_TRANS_FUNC_SRC = $(CMSIS_DSP_SRC)/TransformFunctions
+DSP_CPLX_FUNC_SRC = $(CMSIS_DSP_SRC)/ComplexMathFunctions
+DSP_STATICS_FUNC_SRC = $(CMSIS_DSP_SRC)/StatisticsFunctions
 
 
 OUTDIR = build
@@ -29,7 +34,10 @@ SRCDIR = ./ \
          $(CMSIS_LIB)/CoreSupport \
          $(STM32_LIB)/src \
 		 $(UTIL_LIB)/STM32F429I-Discovery \
-         $(CMSIS_PLAT_SRC)/Source/Templates
+         $(CMSIS_PLAT_SRC)/Source/Templates \
+		 $(DSP_TRANS_FUNC_SRC)/arm_cfft_f32.c \
+		 $(DSP_CPLX_FUNC_SRC)/arm_cmplx_mag_f32.c \
+		 $(DSP_STATICS_FUNC_SRC)/arm_max_f32.c
 INCDIR = ./ \
 	 OS_kernel/include \
          $(CMSIS_LIB)/Include \
