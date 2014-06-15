@@ -93,7 +93,6 @@ void ui_start_tuner()
 
 void ui_start_metronome()
 {
-    int color = 0;
     task_status = METRONOME_TASK;
 
     while(1){
@@ -133,6 +132,6 @@ void ui_init()
 
     //ui_start_tuner();
     
-    UI_start_metronome();
+    ui_start_metronome();
 
 }
