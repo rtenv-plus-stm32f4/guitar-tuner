@@ -952,9 +952,25 @@ int main()
 		} 
 			break;
 		case 0xb: /* signal */
+		{
+			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
+			(*sem_tmp)++;
+			
+			if(((*sem_tmp) - 1 < 0) && (*sem_tmp) >= 0)
+				tasks[current_task].status = TASK_READY;	
+
 			break;
+		}
 		case 0xc: /* wait */
+		{
+			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
+			(*sem_tmp)--;	
+
+			if(*sem_tmp < 0)
+				tasks[current_task].status = TASK_WAIT_SEM;
+				
 			break;
+		}
 		default: /* Catch all interrupts */
 			if ((int)tasks[current_task].stack->r7 < 0) {
 				unsigned int intr = -tasks[current_task].stack->r7 - 16;
