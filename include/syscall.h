@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include "semaphore.h"
 
 void *activate(void *stack);
 
@@ -18,3 +19,7 @@ int mknod(int fd, int mode, int dev);
 void sleep(unsigned int);
 
 void lseek(int fd, int offset, int whence);
+
+void signal(semaphore_t semaphore);
+void wait(semaphore_t semaphore);
+

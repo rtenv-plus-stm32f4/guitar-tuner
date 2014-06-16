@@ -930,7 +930,7 @@ int main()
 			}
 			break;
 		case 0xa: /* lseek */
-            {
+		{
 		        /* Check fd is valid */
 		        int fd = tasks[current_task].stack->r0;
 		        if (fd < FILE_LIMIT && files[fd]) {
@@ -949,7 +949,12 @@ int main()
 			    else {
 			        tasks[current_task].stack->r0 = -1;
 			    }
-			} break;
+		} 
+			break;
+		case 0xb: /* signal */
+			break;
+		case 0xc: /* wait */
+			break;
 		default: /* Catch all interrupts */
 			if ((int)tasks[current_task].stack->r7 < 0) {
 				unsigned int intr = -tasks[current_task].stack->r7 - 16;
