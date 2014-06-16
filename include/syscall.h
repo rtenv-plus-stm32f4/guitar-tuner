@@ -20,6 +20,6 @@ void sleep(unsigned int);
 
 void lseek(int fd, int offset, int whence);
 
-void signal(semaphore_t semaphore);
-void wait(semaphore_t semaphore);
+void signal(semaphore_t *semaphore);
+void wait(semaphore_t *semaphore);
 
