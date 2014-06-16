@@ -1,5 +1,11 @@
 #include "syscall.h"
+#include "semaphore.h"
 #include "metronome.h"
+
+extern semaphore_t tuner_sem;
+extern semaphore_t metronome_sem;
+
+extern int mode;
 
 /* TODO: Finish this with buzzer operating implemantation */
 #define FIRST_BEEP_FREQ  0 
@@ -18,6 +24,8 @@ void beep(int frequency)
 
 void metronome_task()
 {
+	wait(&metronome_sem);
+
 	int current_beat = 0;
 	int cycle_time = 0;
 
