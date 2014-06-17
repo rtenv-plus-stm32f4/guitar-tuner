@@ -4,6 +4,9 @@
 #include "path.h"
 #include "romfs.h"
 
+#include "stm32f4xx.h"
+#include "stm32f4xx_gpio.h"
+
 #include "ui.h"
 #include "metronome.h"
 #include "tuner.h"
@@ -19,6 +22,19 @@ int mode = TUNER_MODE;
 void UI_task()
 {
     ui_init();
+}
+
+void button_init()
+{
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
+
+	GPIO_InitTypeDef GPIO_InitStruct = {
+		.GPIO_Pin = GPIO_Pin_0,
+		.GPIO_Mode = GPIO_Mode_IN,
+		.GPIO_Speed = GPIO_Speed_100MHz
+	};
+
+	GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 void first()
@@ -40,6 +56,7 @@ int main()
 {
 	/* Hardware Initialization */
 	buzzer_init();
+	button_init();
 
 	/* Start to schedule */
 	rtenv_start_scheduler(first);
