@@ -99,19 +99,27 @@ void ui_start_metronome()
 
         ui_bfclear();
 
-        LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
-    
         itoa(metronome_bpm, bpm_str, 10);
 
         metronome_beat_count = metronome_beat_count % BEATLIMIT;
 
         itoa(metronome_beat_count, beat_count_str, 10);
 
-        LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
-        LCD_DisplayStringLine(LCD_LINE_4, bpm_str);
+        LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
+        LCD_DrawFullEllipse(100, 220, 50, 35);
+        LCD_DrawLine(100 + 50, 40, 180, LCD_DIR_VERTICAL);
+        LCD_DrawLine(100 + 50 -1, 40, 180, LCD_DIR_VERTICAL);
+        LCD_DrawLine(100 + 50 -2, 40, 180, LCD_DIR_VERTICAL);
+        LCD_DrawLine(100 + 50 -3, 40, 180, LCD_DIR_VERTICAL);
+        LCD_DrawLine(100 + 50 -4, 40, 180, LCD_DIR_VERTICAL);
 
-        LCD_DisplayStringLine(LCD_LINE_8, beat_text_str);
-        LCD_DisplayStringLine(LCD_LINE_10, beat_count_str);
+        LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
+
+        LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
+        LCD_DisplayStringLine(LCD_LINE_3, bpm_str);
+
+        LCD_DisplayStringLine(LCD_LINE_5, beat_text_str);
+        LCD_DisplayStringLine(LCD_LINE_6, beat_count_str);
 
         sleep(200);
     }
