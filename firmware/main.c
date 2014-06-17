@@ -24,6 +24,18 @@ void UI_task()
     ui_init();
 }
 
+void button_task()
+{
+	while(1) {
+		/* User press down the button */
+		while(!GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0));
+		/* User release the button */
+		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0));
+
+		mode = (mode + 1) % 2;
+	}
+}
+
 void button_init()
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -44,6 +56,7 @@ void first()
 
 	if (!fork()) setpriority(0, 1), metronome_task();
 	if (!fork()) setpriority(0, 1), tuner_task();
+	if (!fork()) setpriority(0, 1), button_init();
 
 	setpriority(0, PRIORITY_LIMIT);
 
