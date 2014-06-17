@@ -722,6 +722,7 @@ void first()
 #define INTR_EVENT(intr) (FILE_LIMIT + (intr) + 15) /* see INTR_LIMIT */
 #define INTR_EVENT_REVERSE(event) ((event) - FILE_LIMIT - 15)
 #define TIME_EVENT (FILE_LIMIT + INTR_LIMIT)
+#define SEMAPHORE_EVENT TIME_EVENT + 1
 
 int intr_release(struct event_monitor *monitor, int event,
                  struct task_control_block *task, void *data)
@@ -734,6 +735,12 @@ int time_release(struct event_monitor *monitor, int event,
 {
     int *tick_count = data;
     return task->stack->r0 == *tick_count;
+}
+
+int semaphore_release(struct event_monitor *monitor, int event,
+                 struct task_control_block *task, void *data)
+{
+    return 1;
 }
 
 /* System resources */
@@ -785,7 +792,11 @@ int main()
 	for (i = -15; i < INTR_LIMIT - 15; i++)
 	    event_monitor_register(&event_monitor, INTR_EVENT(i), intr_release, 0);
 
+	/* Time event */
 	event_monitor_register(&event_monitor, TIME_EVENT, time_release, &tick_count);
+	
+	/* Semaphore event */
+	event_monitor_register(&event_monitor, SEMAPHORE_EVENT, semaphore_release, 0);
 
     /* Initialize first thread */
 	tasks[task_count].stack = (void*)init_task(stacks[task_count], &first);
@@ -956,8 +967,11 @@ int main()
 			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
 			(*sem_tmp)++;
 			
-			if(((*sem_tmp) - 1 < 0) && (*sem_tmp) >= 0)
+			if(((*sem_tmp) - 1 < 0) && (*sem_tmp) >= 0) {
 				tasks[current_task].status = TASK_READY;	
+			
+				event_monitor_release(&event_monitor, SEMAPHORE_EVENT);
+			}
 
 			break;
 		}
@@ -966,8 +980,13 @@ int main()
 			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
 			(*sem_tmp)--;	
 
-			if(*sem_tmp < 0)
+			if(*sem_tmp < 0) {
 				tasks[current_task].status = TASK_WAIT_SEM;
+
+				event_monitor_block(&event_monitor,
+				SEMAPHORE_EVENT,
+				&tasks[current_task]);
+			}
 				
 			break;
 		}
