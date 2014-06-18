@@ -54,7 +54,7 @@ void first()
 
 	if (!fork()) setpriority(0, 2), metronome_task();
 	if (!fork()) setpriority(0, 2), tuner_task();
-	if (!fork()) setpriority(0, 1), button_init();
+	if (!fork()) setpriority(0, 1), button_task();
 
 	setpriority(0, PRIORITY_LIMIT);
 
