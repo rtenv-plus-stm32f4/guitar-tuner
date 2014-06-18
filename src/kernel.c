@@ -765,6 +765,9 @@ int main()
 	int timeup;
 	unsigned int tick_count = 0;
 
+	/* Semaphore */
+	semaphore_t *block_sem[TASK_LIMIT];
+
 	SysTick_Config(configCPU_CLOCK_HZ / configTICK_RATE_HZ);
 
 	init_rs232();
@@ -967,12 +970,6 @@ int main()
 			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
 			(*sem_tmp)++;
 			
-			if(((*sem_tmp) - 1 < 0) && (*sem_tmp) >= 0) {
-				tasks[current_task].status = TASK_READY;	
-			
-				event_monitor_release(&event_monitor, SEMAPHORE_EVENT);
-			}
-
 			break;
 		}
 		case 0xc: /* wait */
@@ -982,6 +979,8 @@ int main()
 
 			if(*sem_tmp < 0) {
 				tasks[current_task].status = TASK_WAIT_SEM;
+				
+				block_sem[current_task] = sem_tmp;				
 
 				event_monitor_block(&event_monitor,
 				SEMAPHORE_EVENT,
@@ -1008,7 +1007,16 @@ int main()
 			}
 		}
 
-        /* Rearrange ready list and event list */
+		/* Check semaphore's status */
+		if(tasks[current_task].status == TASK_WAIT_SEM) {
+			if((*(block_sem[current_task]) - 1 < 0) && (block_sem[current_task]) >= 0) {
+				tasks[current_task].status = TASK_READY;	
+			
+				event_monitor_release(&event_monitor, SEMAPHORE_EVENT);
+			}		
+		}
+
+	        /* Rearrange ready list and event list */
 		event_monitor_serve(&event_monitor);
 
 		/* Check whether to context switch */
