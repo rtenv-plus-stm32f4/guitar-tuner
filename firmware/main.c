@@ -21,7 +21,7 @@ int mode = TUNER_MODE;
 
 void UI_task()
 {
-    ui_init();
+//    ui_init();
 }
 
 void button_task()

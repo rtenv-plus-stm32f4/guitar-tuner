@@ -2,6 +2,8 @@
 #include "semaphore.h"
 #include "metronome.h"
 
+#include "main.h"
+
 extern semaphore_t tuner_sem;
 extern semaphore_t metronome_sem;
 
@@ -44,5 +46,10 @@ void metronome_task()
 		
 		/* Delay for a cycle */
 		sleep(cycle_time);
+
+		if(mode == METRONOME) {
+			signal(&tuner_sem);
+			wait(&metronome_sem);
+		}
 	}
 }
