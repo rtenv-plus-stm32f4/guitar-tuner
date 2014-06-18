@@ -10,9 +10,7 @@
 #include "ui.h"
 #include "metronome.h"
 #include "tuner.h"
-
-#define TUNER_MODE 0
-#define METRONOME  1
+#include "main.h"
 
 semaphore_t tuner_sem = 1; //Default mode
 semaphore_t metronome_sem = 0;
@@ -21,7 +19,7 @@ int mode = TUNER_MODE;
 
 void UI_task()
 {
-//    ui_init();
+    ui_init();
 }
 
 void button_task()
@@ -54,8 +52,8 @@ void first()
 	if (!fork()) setpriority(0, 0), pathserver();
 	if (!fork()) setpriority(0, 0), UI_task();
 
-	if (!fork()) setpriority(0, 1), metronome_task();
-	if (!fork()) setpriority(0, 1), tuner_task();
+	if (!fork()) setpriority(0, 2), metronome_task();
+	if (!fork()) setpriority(0, 2), tuner_task();
 	if (!fork()) setpriority(0, 1), button_init();
 
 	setpriority(0, PRIORITY_LIMIT);

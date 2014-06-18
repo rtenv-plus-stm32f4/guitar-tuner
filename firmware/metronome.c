@@ -1,7 +1,7 @@
 #include "syscall.h"
 #include "semaphore.h"
 #include "metronome.h"
-
+#include "ui.h"
 #include "main.h"
 
 extern semaphore_t tuner_sem;
@@ -47,7 +47,7 @@ void metronome_task()
 		/* Delay for a cycle */
 		sleep(cycle_time);
 
-		if(mode == METRONOME) {
+		if(mode == TUNER_MODE) {
 			signal(&tuner_sem);
 			wait(&metronome_sem);
 		}

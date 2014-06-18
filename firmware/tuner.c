@@ -14,7 +14,7 @@ void tuner_task()
 	wait(&tuner_sem);
 
 	while(1) {
-		if(mode == METRONOME) {
+		if(mode == METRONOME_MODE) {
 			signal(&metronome_sem);
 			wait(&tuner_sem);
 		}
