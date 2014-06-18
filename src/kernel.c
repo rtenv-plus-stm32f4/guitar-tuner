@@ -975,16 +975,19 @@ int main()
 		case 0xc: /* wait */
 		{
 			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
-			(*sem_tmp)--;	
 
-			if(*sem_tmp < 0) {
+			if(*sem_tmp == 0) {
 				tasks[current_task].status = TASK_WAIT_SEM;
 				
+				//Save the semaphore's address
 				block_sem[current_task] = sem_tmp;				
 
+				//Block the current task
 				event_monitor_block(&event_monitor,
 				SEMAPHORE_EVENT,
 				&tasks[current_task]);
+			} else {
+				(*sem_tmp)--;
 			}
 				
 			break;
@@ -1009,7 +1012,7 @@ int main()
 
 		/* Check semaphore's status */
 		if(tasks[current_task].status == TASK_WAIT_SEM) {
-			if((*(block_sem[current_task]) - 1 < 0) && (block_sem[current_task]) >= 0) {
+			if(block_sem[current_task] > 0) {
 				tasks[current_task].status = TASK_READY;	
 			
 				event_monitor_release(&event_monitor, SEMAPHORE_EVENT);
