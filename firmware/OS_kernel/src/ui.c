@@ -80,8 +80,8 @@ void ui_start_tuner()
 
         LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
     
-        LCD_DisplayStringLine(LCD_LINE_3, sound[3]);
-        LCD_DisplayStringLine(LCD_LINE_5, frequency_str);
+        LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
+        LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
 
         LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
         LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
