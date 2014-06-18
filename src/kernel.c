@@ -809,6 +809,7 @@ int main()
 	list_push(&ready_list[tasks[task_count].priority], &tasks[task_count].list);
 	task_count++;
 
+	int wait_called = 0;
 	while (1) {
 		tasks[current_task].stack = activate(tasks[current_task].stack);
 		tasks[current_task].status = TASK_READY;
@@ -974,6 +975,7 @@ int main()
 		}
 		case 0xc: /* wait */
 		{
+			wait_called = 1;
 			semaphore_t *sem_tmp = (semaphore_t*)tasks[current_task].stack->r0;
 
 			if(*sem_tmp == 0) {
@@ -1011,7 +1013,7 @@ int main()
 		}
 
 		/* Check semaphore's status */
-		if(tasks[current_task].status == TASK_WAIT_SEM) {
+		if((tasks[current_task].status == TASK_WAIT_SEM) && (wait_called == 0)) {
 			if(block_sem[current_task] > 0) {
 				tasks[current_task].status = TASK_READY;	
 			
