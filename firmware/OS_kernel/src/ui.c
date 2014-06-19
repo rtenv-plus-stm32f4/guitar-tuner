@@ -3,6 +3,7 @@
 #include <string.h>
 #include "metronome.h"
 #include "ui.h"
+#include "main.h"
 
 static uint8_t sound[8][2] = {"A", "B", "C", "D", "E", "F", "G", "H"};
 static uint8_t hz_str[3] = "Hz";
@@ -15,6 +16,20 @@ static uint8_t task_status = TUNER_TASK;
 
 extern int metronome_bpm;
 extern int metronome_beat_count;
+
+extern int mode;
+
+int show_layer = 0;
+int hidden_layer = 1;
+
+struct layer_buffer{
+    LTDC_Layer_TypeDef *LTDC_Layer;
+    int LCD_Layer;
+    void *buffer;
+}layer_buffers[] = {
+    {LTDC_Layer1,LCD_BACKGROUND_LAYER, (void*)LCD_FRAME_BUFFER},
+    {LTDC_Layer2,LCD_FOREGROUND_LAYER,(void*) LCD_FRAME_BUFFER + BUFFER_OFFSET}
+};
 
 static uint8_t* itoa(int value, uint8_t* result, int base)
 {
@@ -47,9 +62,42 @@ void ui_bfclear()
 	//memset((void *) LCD_FRAME_BUFFER, 0xff, BUFFER_OFFSET);
 }
 
+void ui_clear_backbf(){
+	memset((void *) LCD_FRAME_BUFFER + BUFFER_OFFSET, 0xff, BUFFER_OFFSET);
+}
+
+void ui_clear_frontbf(){
+	memset((void *) LCD_FRAME_BUFFER, 0xff, BUFFER_OFFSET);
+}
+
+void ui_clear(void *buffer, int color)
+{
+	memset(buffer, color, BUFFER_OFFSET);
+
+}
+
+void ui_swap_layer()
+{
+    //LTDC_LayerCmd(layer_buffers[hidden_layer].LTDC_Layer, ENABLE);
+    //LTDC_LayerCmd(layer_buffers[show_layer].LTDC_Layer, DISABLE);
+    LTDC_LayerAlpha(layer_buffers[hidden_layer].LTDC_Layer, 0xff);
+    LTDC_LayerAlpha(layer_buffers[show_layer].LTDC_Layer, 0x00);
+    LCD_SetLayer(layer_buffers[show_layer].LCD_Layer);
+    LTDC_ReloadConfig(LTDC_IMReload);
+    //ui_clear(layer_buffers[show_layer].buffer, 0xff);
+    LCD_Clear(LCD_COLOR_WHITE);
+
+    show_layer = !show_layer;
+    hidden_layer = !hidden_layer;
+
+    
+}
 
 void ui_draw_beat(int color)
 {
+    if(mode != METRONOME_MODE){
+        return;
+    }
 
     switch(color){
         case GREEN:
@@ -79,65 +127,54 @@ void ui_start_tuner()
     itoa(hz, frequency_str, 10);
     strcat((char *)frequency_str, (char *)hz_str);
 
-    LCD_Clear(LCD_COLOR_WHITE);
-
-    while(1){
-
-
-        LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
+    LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
     
-        LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
-        LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
-        LCD_DrawLine(220, 180, 40, LCD_DIR_VERTICAL);
+    LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
+    LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
+    LCD_DrawLine(220, 180, 40, LCD_DIR_VERTICAL);
 
-        LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
-        LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
+    LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
+    LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
 
-
-        sleep(200);
-    }
+    sleep(300);
 }
 
 void ui_start_metronome()
 {
     task_status = METRONOME_TASK;
 
-    LCD_Clear(LCD_COLOR_WHITE);
-
-    while(1){
-
-        itoa(metronome_bpm, bpm_str, 10);
+    itoa(metronome_bpm, bpm_str, 10);
     
-        metronome_beat_count = metronome_beat_count % BEATLIMIT;
+    metronome_beat_count = metronome_beat_count % BEATLIMIT;
     
-        itoa(metronome_beat_count, beat_count_str, 10);
+    itoa(metronome_beat_count, beat_count_str, 10);
     
-        LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
-        LCD_DrawFullEllipse(100, 220, 50, 35);
+    LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
+    LCD_DrawFullEllipse(100, 220, 50, 35);
     
     
-        LCD_DrawLine(100 + 50, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -1, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -2, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -3, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -4, 40, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(100 + 50, 40, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(100 + 50 -1, 40, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(100 + 50 -2, 40, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(100 + 50 -3, 40, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(100 + 50 -4, 40, 180, LCD_DIR_VERTICAL);
         
-        LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
+    LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
         
-        LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
-        LCD_DisplayStringLine(LCD_LINE_3, bpm_str);
+    LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
+    LCD_DisplayStringLine(LCD_LINE_3, bpm_str);
         
-        LCD_DisplayStringLine(LCD_LINE_5, beat_text_str);
-        LCD_DisplayStringLine(LCD_LINE_6, beat_count_str);
+    LCD_DisplayStringLine(LCD_LINE_5, beat_text_str);
+    LCD_DisplayStringLine(LCD_LINE_6, beat_count_str);
 
-        sleep(200);
+    ui_swap_layer();
 
-    }
+    sleep(300);
+
 }
 
 void ui_init()
 {
-
     LCD_Init();
 
     LCD_LayerInit();
@@ -146,13 +183,20 @@ void ui_init()
 
     LCD_DisplayOn();
 
-    LCD_SetLayer(LCD_FOREGROUND_LAYER);
-    LCD_SetTransparency(0x00);
+    LCD_SetLayer(layer_buffers[hidden_layer].LCD_Layer);
+    ui_swap_layer();
 
-    LCD_SetLayer(LCD_BACKGROUND_LAYER);
+    mode = METRONOME_MODE;
 
-    //ui_start_tuner();
-    
-    //ui_start_metronome();
+    while(1){
 
+        if(mode == TUNER_MODE){
+            ui_start_tuner();
+        }
+
+        if(mode == METRONOME_MODE){
+            ui_start_metronome();
+        }
+
+    }
 }

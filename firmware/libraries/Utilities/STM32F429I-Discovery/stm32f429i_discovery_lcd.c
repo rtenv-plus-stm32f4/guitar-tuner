@@ -542,7 +542,7 @@ void LCD_Clear(uint16_t Color)
   uint32_t index = 0;
   
   /* erase memory */
-  for (index = 0x00; index < BUFFER_OFFSET; index++)
+  for (index = 0x00; index < BUFFER_OFFSET / 2; index++)
   {
     *(__IO uint16_t*)(CurrentFrameBuffer + (2*index)) = Color;
   } 
