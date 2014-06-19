@@ -136,6 +136,8 @@ void ui_start_tuner()
     LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
     LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
 
+    ui_swap_layer();
+
     sleep(300);
 }
 
@@ -185,8 +187,6 @@ void ui_init()
 
     LCD_SetLayer(layer_buffers[hidden_layer].LCD_Layer);
     ui_swap_layer();
-
-    mode = METRONOME_MODE;
 
     while(1){
 
