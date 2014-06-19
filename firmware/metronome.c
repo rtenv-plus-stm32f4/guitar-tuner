@@ -58,19 +58,33 @@ void TIM_config(void)
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     /* TIM IT enable */
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
-    /* TIM2 enable counter */
-    TIM_Cmd(TIM2, ENABLE);
 }
 
 void buzzer_init()
 {
     TIM_config();
-
-  while(1){}
 }
 
 void beep(int frequency)
 {
+    int i = 0,j = 0;
+
+    switch(frequency){
+        case BUZZER_TIK:
+            TIM2->ARR = 999;
+            break;
+        case BUZZER_TAK:
+            TIM2->ARR = 499;
+            break;
+    }
+
+    /* TIM2 enable counter */
+    TIM_Cmd(TIM2, ENABLE);
+
+    for(i = 0; i < 1000000; i++){
+        j++;
+    }
+    TIM_Cmd(TIM2, DISABLE);
 }
 
 void metronome_task()
