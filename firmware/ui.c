@@ -1,4 +1,5 @@
 #include "stm32f429i_discovery_lcd.h"
+#include "stm32f429i_discovery_ioe.h"
 #include "syscall.h"
 #include <string.h>
 #include "metronome.h"
