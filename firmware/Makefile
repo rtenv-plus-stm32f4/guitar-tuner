@@ -4,12 +4,15 @@ TARGET = main
 CROSS_COMPILE ?= arm-none-eabi-
 CC := $(CROSS_COMPILE)gcc
 CFLAGS = -fno-common -ffreestanding -O0 \
-			-fno-builtin \
+		 -fno-builtin \
          -gdwarf-2 -g3 -Wall -Werror \
          -mcpu=cortex-m4 -mthumb \
          -Wl,-Tmain.ld -nostartfiles \
          -DUSER_NAME=\"$(USER)\" \
-         -DSTM32F429_439xx -DUSE_STDPERIPH_DRIVER -march=armv7e-m -mtune=cortex-m4 -mlittle-endian
+         -DARM_MATH_CM4 \
+         -DSTM32F429_439xx -DUSE_STDPERIPH_DRIVER -march=armv7e-m -mtune=cortex-m4 -mlittle-endian \
+         -mfpu=fpv4-sp-d16 -mfloat-abi=hard \
+		 -D__FPU_USED=1 -D__FPU_PRESENT=1
 
 ARCH = CM4
 VENDOR = ST
@@ -21,7 +24,9 @@ STM32_LIB=$(LIBDIR)/libraries/STM32F4xx_StdPeriph_Driver
 UTIL_LIB=$(LIBDIR)/libraries/Utilities
 
 CMSIS_PLAT_SRC = $(CMSIS_LIB)/Device/$(VENDOR)/$(PLAT)
+CMSIS_DSP_SRC = $(CMSIS_LIB)/DSP_Lib/Source
 
+DSP_FAST_MATH_SRC = $(CMSIS_DSP_SRC)/FastMathFunctions
 
 OUTDIR = build
 SRCDIR = ./ \
@@ -42,7 +47,11 @@ TOOLDIR = tool
 
 SRC = $(wildcard $(addsuffix /*.c,$(SRCDIR))) \
       $(wildcard $(addsuffix /*.s,$(SRCDIR))) \
-      $(CMSIS_PLAT_SRC)/Source/Templates/gcc_ride7/startup_stm32f429_439xx.s
+      $(wildcard $(addsuffix /*.S,$(SRCDIR))) \
+      $(CMSIS_PLAT_SRC)/Source/Templates/gcc_ride7/startup_stm32f429_439xx.s \
+	  $(DSP_FAST_MATH_SRC)/arm_cos_f32.c \
+	  $(DSP_FAST_MATH_SRC)/arm_sin_f32.c
+
 OBJ := $(addprefix $(OUTDIR)/,$(patsubst %.s,%.o,$(SRC:.c=.o)))
 DEP = $(OBJ:.o=.o.d)
 DAT =
@@ -65,7 +74,7 @@ $(OUTDIR)/$(TARGET).lst: $(OUTDIR)/$(TARGET).elf
 $(OUTDIR)/$(TARGET).elf: $(OBJ) $(DAT)
 	@echo "    LD      "$@
 	@echo "    MAP     "$(OUTDIR)/$(TARGET).map
-	@$(CROSS_COMPILE)gcc $(CFLAGS) -Wl,-Map=$(OUTDIR)/$(TARGET).map -o $@ $^
+	@$(CROSS_COMPILE)gcc $(CFLAGS) $(LDFLAGS) -Wl,-Map=$(OUTDIR)/$(TARGET).map -o $@ $^
 
 $(OUTDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -76,6 +85,11 @@ $(OUTDIR)/%.o: %.s
 	@mkdir -p $(dir $@)
 	@echo "    CC      "$@
 	@$(CROSS_COMPILE)gcc $(CFLAGS) -MMD -MF $@.d -o $@ -c $(INCLUDES) $<
+
+#$(OUTDIR)/%.o: %.S
+#	@mkdir -p $(dir $@)
+#	@echo "    CC      "$@
+#	@$(CROSS_COMPILE)gcc $(CFLAGS) -MMD -MF $@.d -o $@ -c $(INCLUDES) $<
 
 flash:$(OUTDIR)/$(TARGET).bin
 	st-flash write $(OUTDIR)/$(TARGET).bin 0x8000000
