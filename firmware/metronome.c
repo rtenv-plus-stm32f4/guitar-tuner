@@ -91,7 +91,7 @@ void beep(int frequency)
 
 void metronome_task()
 {
-	wait(&metronome_sem);
+	//wait(&metronome_sem);
 
 	int current_beat = 0;
 	int cycle_time = 0;
@@ -113,8 +113,8 @@ void metronome_task()
 		sleep(cycle_time);
 
 		if(mode == TUNER_MODE) {
-			signal(&tuner_sem);
-			wait(&metronome_sem);
+			//signal(&tuner_sem);
+			//wait(&metronome_sem);
 		}
 	}
 }
