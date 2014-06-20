@@ -21,9 +21,13 @@ void button_task()
 {
 	while(1) {
 		/* User press down the button */
-		while(!GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0));
+		while(!GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)) {
+			sleep(1);
+		}
 		/* User release the button */
-		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0));
+		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)) {
+			sleep(1);
+		}
 
 		mode = (mode + 1) % 2;
 	}
@@ -47,9 +51,11 @@ void first()
 	if (!fork()) setpriority(0, 0), pathserver();
 	if (!fork()) setpriority(0, 1), ui_task();
 
+	if (!fork()) setpriority(0, 1), button_task();
+
 	if (!fork()) setpriority(0, 1), metronome_task();
 	if (!fork()) setpriority(0, 1), tuner_task();
-	if (!fork()) setpriority(0, 1), button_task();
+	//if (!fork()) setpriority(0, 1), button_task();
 
 	setpriority(0, PRIORITY_LIMIT);
 
