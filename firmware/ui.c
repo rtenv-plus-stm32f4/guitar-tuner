@@ -15,7 +15,12 @@ static uint8_t bpm_str[4];
 static uint8_t beat_count_str[2];
 static uint8_t space_str[6] = "     ";
 static char solmization_char[7] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
+static int frequency_stage[3][7] = {{65, 73, 82, 87, 98, 110, 123}
+                                   ,{130, 146, 164, 174, 196, 220, 246}
+                                   ,{261, 293, 329, 349, 392, 440, 493}};
+static int frequency_stage_threshold[2] = {128, 253};
 static int easter_egg = 0;
+static int hz;
 
 extern int metronome_bpm;
 extern int metronome_beat_count;
@@ -246,7 +251,53 @@ void ui_draw_pos(int pos){
 void ui_start_tuner()
 {
 
-    int hz = 332, i = 0, solmization = 0;
+    int i = 0, solmization = 0;
+    int index = 0,min = 999,tmp = 0;
+    int stage = 0;
+    int pos = 0;
+
+    if(hz < frequency_stage_threshold[0]){
+        stage = 0;
+    }else if(hz > frequency_stage_threshold[0] && hz < frequency_stage_threshold[1]){
+        stage = 1;
+    }else{
+        stage = 2;
+    }
+    
+    for(i = 0; i < 7; i++){
+        tmp = hz - frequency_stage[stage][i];
+        if(tmp < 0)
+        {
+            tmp *= -1;
+        }
+
+        if(tmp < min){
+            min = tmp;
+            index = i;
+        }
+    }
+    solmization = index;
+
+    min = 9999;
+    tmp = 0;
+
+    for(i = 0; i < 7; i++){
+        tmp = hz - frequency_stage[stage][i];
+        if(tmp < min && tmp > 0){
+            min = tmp;
+            index = i;
+        }
+    }
+    tmp = hz - frequency_stage[stage][index];
+    if(hz <= 65){
+        pos = 0;
+    }else if(hz > 490){
+        pos = 30*6;
+    }else{
+        pos = 30 * index + 30 * tmp/(frequency_stage[stage][index+1] - frequency_stage[stage][index]);
+    }
+
+
 
     itoa(hz, hz_value_str, 10);
 
@@ -257,8 +308,9 @@ void ui_start_tuner()
     strcat((char *)frequency_str, (char *)hz_str);
 
     LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
-    
-    LCD_DrawLine(30, 200, 180, LCD_DIR_HORIZONTAL);
+
+    //base scale line 
+    LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
     LCD_DrawLine(30, 180, 40, LCD_DIR_VERTICAL);
 
     //draw scale
@@ -270,7 +322,7 @@ void ui_start_tuner()
     LCD_DisplayStringLine(LCD_LINE_4, frequency_str);
 
     ui_draw_solmization();
-    ui_draw_pos(20);
+    ui_draw_pos(pos);
 
     ui_swap_layer();
 
@@ -325,6 +377,9 @@ void ui_task()
 
     TP_Config();
 
+    //test code , wait for real value
+    hz = 33;
+
     while(1){
         if(mode == TUNER_MODE){
             ui_start_tuner();
@@ -333,6 +388,8 @@ void ui_task()
             ui_start_metronome();
         }
         sleep(10);
+
+        hz++;
     }
     
 }
