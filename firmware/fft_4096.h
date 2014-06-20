@@ -12,6 +12,6 @@ struct cmplx {
 	float real, imag;
 };
 
-float fft_4096( float *data );
+int fft_4096( float *data );
 
 #endif /* FFT_4096 */

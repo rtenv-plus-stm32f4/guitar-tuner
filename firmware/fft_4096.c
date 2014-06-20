@@ -106,7 +106,7 @@ void butterfly()
  *
  * Return the frequency which has the max response.
  */
-float fft_4096( float *data )
+int fft_4096( float *data )
 {
 	int i, maxIndex;
 	float maxResponse = 0.0;
@@ -136,6 +136,6 @@ float fft_4096( float *data )
 		}
 	}
 
-	return (float) maxIndex;
+	return maxIndex;
 
 }	// end of fft_4096()

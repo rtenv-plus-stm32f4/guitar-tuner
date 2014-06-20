@@ -4,10 +4,11 @@
 
 #define SAMPLE_RATE	4096
 
+int responseFreq;
+
 void tuner_task()
 {
 	extern float test_signal[ DATA_LENGTH ];
-	float responseFreq;
 
 	responseFreq = fft_4096( test_signal );
 	responseFreq += responseFreq;
