@@ -21,6 +21,8 @@ extern int metronome_beat_count;
 
 extern int mode;
 
+extern int metro_status;
+
 int show_layer = 0;
 int hidden_layer = 1;
 
@@ -185,6 +187,7 @@ void ui_touch_detect()
         }
         //start/stop
         if(TP_State->X > 20 && TP_State->X < 20+40 && TP_State->Y > 260 && TP_State->Y < 300){
+            metro_status = !metro_status;
         }
     }
 }
