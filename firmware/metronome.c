@@ -2,9 +2,6 @@
 #include "metronome.h"
 #include "stm32f4xx.h"
 
-/* TODO: Finish this with buzzer operating implemantation */
-#define FIRST_BEEP_FREQ  0 
-#define NORMAL_BEEP_FREQ 1
 
 int metronome_bpm = DEFAULT_METRONOME_BPM;
 int metronome_beat_count = DEFAULT_BEAT_CNT;
