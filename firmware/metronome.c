@@ -5,6 +5,9 @@
 #include "ui.h"
 #include "main.h"
 
+#define STOP    0
+#define RUNNING 1
+
 extern semaphore_t tuner_sem;
 extern semaphore_t metronome_sem;
 
@@ -15,6 +18,7 @@ int metronome_beat_count = DEFAULT_BEAT_CNT;
 int cycle_time = 0;
 int current_beat = 0;
 int beat_draw;
+int metro_status = STOP;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
@@ -102,6 +106,7 @@ void metronome_task()
 {
 	while(1) {
 		while(mode == TUNER_MODE);
+		while(!(metro_status));
 
 		/* Calculate the beat cycle time */
 		cycle_time = (60 * 1000) / metronome_bpm / 16; /* Cycle time = 1 minute / BPM */
