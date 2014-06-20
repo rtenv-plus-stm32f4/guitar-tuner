@@ -6,13 +6,14 @@
 #include "ui.h"
 #include "main.h"
 
-static uint8_t sound[8][2] = {"A", "B", "C", "D", "E", "F", "G", "H"};
 static uint8_t hz_str[3] = "Hz";
-static uint8_t frequency_str[4];
+static uint8_t frequency_str[20];
+static uint8_t hz_value_str[4];
 static uint8_t bpm_text_str[4] = "BPM";
 static uint8_t beat_text_str[5] = "BEAT";
 static uint8_t bpm_str[4];
 static uint8_t beat_count_str[2];
+static uint8_t space_str[6] = "     ";
 static char solmization_char[7] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
 
 extern int metronome_bpm;
@@ -189,12 +190,22 @@ void ui_draw_solmization()
     }
 }
 
+void ui_draw_pos(int pos){
+    LCD_SetColors(LCD_COLOR_BLUE2, LCD_COLOR_BLUE2);
+    LCD_DrawFullCircle(30+pos, 200, 5);
+}
+
 void ui_start_tuner()
 {
 
-    int hz = 332, i = 0;
+    int hz = 332, i = 0, solmization = 0;
 
-    itoa(hz, frequency_str, 10);
+    itoa(hz, hz_value_str, 10);
+
+    frequency_str[0] = '\0';
+
+    strcat((char *)frequency_str, (char *)space_str);
+    strcat((char *)frequency_str, (char *)hz_value_str);
     strcat((char *)frequency_str, (char *)hz_str);
 
     LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
@@ -207,10 +218,11 @@ void ui_start_tuner()
         LCD_DrawLine(30 + 30*i, 180, 40, LCD_DIR_VERTICAL);
     }
 
-    LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
-    LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
+    LCD_DisplayChar(LCD_LINE_2, 115, solmization_char[solmization]);
+    LCD_DisplayStringLine(LCD_LINE_4, frequency_str);
 
     ui_draw_solmization();
+    ui_draw_pos(20);
 
     ui_swap_layer();
 
