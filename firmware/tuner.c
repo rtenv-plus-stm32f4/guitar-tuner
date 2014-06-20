@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "syscall.h"
 #include "tuner.h"
 #include "fft_4096.h"
@@ -9,7 +11,7 @@ int responseFreq;
 
 void tuner_task()
 {
-	extern float test_signal[ DATA_LENGTH ];
+	extern int16_t test_signal[ DATA_LENGTH ];
 
 	responseFreq = fft_4096( test_signal );
 	responseFreq += responseFreq;

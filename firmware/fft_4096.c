@@ -1,6 +1,7 @@
 /* The code is referenced to 吉帥虎 ( Original
  * link is lost ), Ver 1.2, 2010-2-20
  */
+#include <stdint.h>
 
 #include "fft_4096.h"
 #include "arm_math.h"
@@ -10,13 +11,13 @@ static struct cmplx fft_input[ DATA_LENGTH ];
 /* Store the signal to real part of fft_input
  * and set the image part of fft_input to 0.
  */
-void fft_input_init( float *data )
+void fft_input_init( int16_t *data )
 {
 	int i;
 
 	for ( i = 0; i < DATA_LENGTH; ++i )
 	{
-		fft_input[i].real = data[i];
+		arm_q15_to_float( &data[i], &fft_input[i].real, 1 );
 		fft_input[i].imag = 0.0f;
 	}
 }
@@ -106,7 +107,7 @@ void butterfly()
  *
  * Return the frequency which has the max response.
  */
-int fft_4096( float *data )
+int fft_4096( int16_t *data )
 {
 	int i, maxIndex;
 	float maxResponse = 0.0;
