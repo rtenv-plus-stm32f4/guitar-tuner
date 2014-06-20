@@ -12,6 +12,8 @@ extern int mode;
 
 int metronome_bpm = DEFAULT_METRONOME_BPM;
 int metronome_beat_count = DEFAULT_BEAT_CNT;
+int cycle_time = 0;
+int current_beat = 0;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
@@ -93,20 +95,43 @@ void metronome_task()
 {
 	//wait(&metronome_sem);
 
-	int current_beat = 0;
-	int cycle_time = 0;
-
 	while(1) {
 		while(mode == TUNER_MODE);
 
 		/* Calculate the beat cycle time */
-		cycle_time = (60 * 1000) / metronome_bpm; /* Cycle time = 1 minute / BPM */
+		cycle_time = (60 * 1000) / metronome_bpm / 16; /* Cycle time = 1 minute / BPM */
 
 		/* First beat and beat count is setting as 0 or bigger then 1 */
 		if(current_beat == 0 && metronome_beat_count != 1) {
 			beep(FIRST_BEEP_FREQ);
+			//ui_draw_beat(RED);
 		} else {
 			beep(NORMAL_BEEP_FREQ);
+			//ui_draw_beat(GREEN);
+		}
+
+		current_beat = (current_beat + 1) % metronome_beat_count;
+		
+		/* Delay for a cycle */
+		sleep(cycle_time);
+
+		if(mode == TUNER_MODE) {
+			//signal(&tuner_sem);
+			//wait(&metronome_sem);
+		}
+	}
+}
+
+void draw_beat_task()
+{
+	while(1) {
+		while(mode == TUNER_MODE);
+
+		/* First beat and beat count is setting as 0 or bigger then 1 */
+		if(current_beat == 0 && metronome_beat_count != 1) {
+			ui_draw_beat(RED);
+		} else {
+			ui_draw_beat(GREEN);
 		}
 
 		current_beat = (current_beat + 1) % metronome_beat_count;
