@@ -322,6 +322,11 @@ typedef union
   uint32_t w;                            /*!< Type      used for word access                  */
 } CONTROL_Type;
 
+/* Special purpose CONTROL register */
+#define CONTROL_NPRIV	(1 << 0)
+#define CONTROL_SPSEL	(1 << 1)
+#define CONTROL_FPCA	(1 << 2)
+
 /*@} end of group CMSIS_CORE */
 
 

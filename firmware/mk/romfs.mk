@@ -4,7 +4,9 @@ DAT += $(OUTDIR)/$(DATDIR)/rom0.o
 $(OUTDIR)/$(ROMDIR).o: $(OUTDIR)/$(ROMDIR).bin
 	@mkdir -p $(dir $@)
 	@echo "    OBJCOPY "$@
-	@echo '' | $(CROSS_COMPILE)gcc -x c - -c -o $@
+	@echo '' | $(CROSS_COMPILE)gcc -x c - \
+			-mfpu=fpv4-sp-d16 -mfloat-abi=hard \
+			-c -o $@
 	@$(CROSS_COMPILE)objcopy -j .ARM.attributes \
 		--add-section .rom.data=$< $@ $@
 
