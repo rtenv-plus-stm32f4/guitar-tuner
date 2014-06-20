@@ -7,5 +7,6 @@
 #include <stddef.h>
 
 void rtenv_start_scheduler();
+void itoa(int n, char *dst, int base);
 
 #endif
