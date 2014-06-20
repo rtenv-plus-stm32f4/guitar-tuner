@@ -22,6 +22,8 @@ extern int mode;
 int show_layer = 0;
 int hidden_layer = 1;
 
+static void TP_Config(void);
+
 struct layer_buffer{
     LTDC_Layer_TypeDef *LTDC_Layer;
     int LCD_Layer;
@@ -85,6 +87,7 @@ void ui_draw_beat(int color)
     }
 
     LCD_DrawFullCircle(200, 40, 10);
+    ui_start_metronome();
 
 
     sleep(50);
@@ -92,6 +95,23 @@ void ui_draw_beat(int color)
     // clear the circle
     LCD_SetColors(LCD_COLOR_WHITE, LCD_COLOR_WHITE);
     LCD_DrawFullCircle(200, 40, 10);
+    ui_start_metronome();
+}
+
+void TP_Config()
+{
+  IOE_Config();
+}
+
+void ui_touch_detect()
+{
+    static TP_STATE* TP_State; 
+
+    TP_State = IOE_TP_GetState();
+
+    if(TP_State->TouchDetected){
+        LCD_DrawFullCircle(160, 80, 20);
+    }
 }
 
 void ui_start_tuner()
@@ -118,7 +138,6 @@ void ui_start_tuner()
 
     ui_swap_layer();
 
-    sleep(300);
 }
 
 void ui_start_metronome()
@@ -148,9 +167,10 @@ void ui_start_metronome()
     LCD_DisplayStringLine(LCD_LINE_5, beat_text_str);
     LCD_DisplayStringLine(LCD_LINE_6, beat_count_str);
 
+    ui_touch_detect();
+
     ui_swap_layer();
 
-    sleep(300);
 
 }
 
@@ -170,6 +190,10 @@ void ui_task()
     LCD_SetLayer(layer_buffers[hidden_layer].LCD_Layer);
     ui_swap_layer();
 
+    TP_Config();
+
+    mode = METRONOME_MODE;
+
     while(1){
         if(mode == TUNER_MODE){
             ui_start_tuner();
@@ -177,6 +201,7 @@ void ui_task()
         if(mode == METRONOME_MODE){
             ui_start_metronome();
         }
+        sleep(100);
     }
     
 }
