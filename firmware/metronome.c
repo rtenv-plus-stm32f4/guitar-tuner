@@ -12,7 +12,6 @@ int metronome_beat_count = DEFAULT_BEAT_CNT;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
 
-uint16_t CCR1_Val = 350;
 uint16_t PrescalerValue = 0;
 
 void TIM2_IRQHandler(void)
@@ -58,6 +57,7 @@ void TIM_config(void)
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     /* TIM IT enable */
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
+    TIM_Cmd(TIM2, DISABLE);
 }
 
 void buzzer_init()
@@ -67,13 +67,12 @@ void buzzer_init()
 
 void beep(int frequency)
 {
-    int i = 0,j = 0;
 
     switch(frequency){
-        case BUZZER_TIK:
+        case NORMAL_BEEP_FREQ:
             TIM2->ARR = 999;
             break;
-        case BUZZER_TAK:
+        case FIRST_BEEP_FREQ:
             TIM2->ARR = 499;
             break;
     }
@@ -81,9 +80,8 @@ void beep(int frequency)
     /* TIM2 enable counter */
     TIM_Cmd(TIM2, ENABLE);
 
-    for(i = 0; i < 1000000; i++){
-        j++;
-    }
+    sleep(20);
+
     TIM_Cmd(TIM2, DISABLE);
 }
 
