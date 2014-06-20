@@ -11,6 +11,7 @@
 void ui_draw_beat(int color);
 
 void ui_init();
+void ui_task();
 void ui_start_tuner();
 void ui_start_metronome();
 

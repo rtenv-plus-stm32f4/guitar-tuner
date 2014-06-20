@@ -157,19 +157,20 @@ void ui_init()
     LTDC_Cmd(ENABLE);
 
     LCD_DisplayOn();
+}
 
+void ui_task()
+{
     LCD_SetLayer(layer_buffers[hidden_layer].LCD_Layer);
     ui_swap_layer();
 
     while(1){
-
         if(mode == TUNER_MODE){
             ui_start_tuner();
         }
-
         if(mode == METRONOME_MODE){
             ui_start_metronome();
         }
-
     }
+    
 }
