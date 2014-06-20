@@ -15,6 +15,7 @@ static uint8_t bpm_str[4];
 static uint8_t beat_count_str[2];
 static uint8_t space_str[6] = "     ";
 static char solmization_char[7] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
+static int easter_egg = 0;
 
 extern int metronome_bpm;
 extern int metronome_beat_count;
@@ -150,6 +151,30 @@ void TP_Config()
   IOE_Config();
 }
 
+void ui_draw_flower()
+{
+    if(easter_egg % 2 == 1){
+        LCD_SetColors(LCD_COLOR_YELLOW, LCD_COLOR_YELLOW);
+    }else{
+        LCD_SetColors(LCD_COLOR_RED, LCD_COLOR_RED);
+    }
+    LCD_DrawFullCircle(40, 280-25, 5);
+    LCD_DrawFullCircle(40, 280+25, 5);
+    LCD_DrawFullCircle(40-25, 280, 5);
+    LCD_DrawFullCircle(40+25, 280, 5);
+
+    if(easter_egg % 2 == 1){
+        LCD_SetColors(LCD_COLOR_RED, LCD_COLOR_RED);
+    }else{
+        LCD_SetColors(LCD_COLOR_YELLOW, LCD_COLOR_YELLOW);
+    }
+    LCD_DrawFullCircle(40+15, 280-22, 5);
+    LCD_DrawFullCircle(40-15, 280-22, 5);
+    LCD_DrawFullCircle(40+15, 280+22, 5);
+    LCD_DrawFullCircle(40-15, 280+22, 5);
+
+}
+
 void ui_touch_detect()
 {
     static TP_STATE* TP_State; 
@@ -188,6 +213,18 @@ void ui_touch_detect()
         //start/stop
         if(TP_State->X > 20 && TP_State->X < 20+40 && TP_State->Y > 260 && TP_State->Y < 300){
             metro_status = !metro_status;
+        }
+        //easter egg
+        if(TP_State->X > 140 && TP_State->X < 180 && TP_State->Y > 260 && TP_State->Y < 300){
+            if(metro_status == 1){
+                easter_egg++;
+            }else{
+                easter_egg = 0;
+            }
+
+            if(easter_egg > 20){
+               ui_draw_flower(); 
+            }
         }
     }
 }
