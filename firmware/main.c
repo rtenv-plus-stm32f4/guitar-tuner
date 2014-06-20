@@ -17,10 +17,6 @@ semaphore_t metronome_sem = 0;
 
 int mode = TUNER_MODE;
 
-void UI_task()
-{
-}
-
 void button_task()
 {
 	while(1) {
@@ -49,7 +45,7 @@ void button_init()
 void first()
 {
 	if (!fork()) setpriority(0, 0), pathserver();
-	if (!fork()) setpriority(0, 1), UI_task();
+	if (!fork()) setpriority(0, 1), ui_task();
 
 	if (!fork()) setpriority(0, 1), metronome_task();
 	if (!fork()) setpriority(0, 1), tuner_task();

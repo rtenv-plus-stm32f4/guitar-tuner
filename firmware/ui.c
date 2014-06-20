@@ -1,8 +1,9 @@
+#include <string.h>
 #include "stm32f429i_discovery_lcd.h"
 #include "syscall.h"
-#include <string.h>
 #include "metronome.h"
 #include "ui.h"
+#include "main.h"
 
 static uint8_t sound[8][2] = {"A", "B", "C", "D", "E", "F", "G", "H"};
 static uint8_t hz_str[3] = "Hz";
@@ -11,10 +12,11 @@ static uint8_t bpm_text_str[4] = "BPM";
 static uint8_t beat_text_str[5] = "BEAT";
 static uint8_t bpm_str[4];
 static uint8_t beat_count_str[2];
-static uint8_t task_status = TUNER_TASK;
 
 extern int metronome_bpm;
 extern int metronome_beat_count;
+
+extern int mode;
 
 static uint8_t* itoa(int value, uint8_t* result, int base)
 {
@@ -70,69 +72,73 @@ void ui_draw_beat(int color)
     LCD_DrawFullCircle(200, 40, 10);
 }
 
-void ui_start_tuner()
+void ui_draw_tuner()
 {
-    task_status = TUNER_TASK;
+	int hz = 332;
 
-    int hz = 332;
+	itoa(hz, frequency_str, 10);
+	strcat((char *)frequency_str, (char *)hz_str);
 
-    itoa(hz, frequency_str, 10);
-    strcat((char *)frequency_str, (char *)hz_str);
-
-    LCD_Clear(LCD_COLOR_WHITE);
-
-    while(1){
-
-
-        LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
+	LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
     
-        LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
-        LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
-        LCD_DrawLine(220, 180, 40, LCD_DIR_VERTICAL);
+	LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
+	LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
+	LCD_DrawLine(220, 180, 40, LCD_DIR_VERTICAL);
 
-        LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
-        LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
-
-
-        sleep(200);
-    }
+	LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
+	LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
 }
 
-void ui_start_metronome()
+void ui_draw_metronome()
 {
-    task_status = METRONOME_TASK;
-
-    LCD_Clear(LCD_COLOR_WHITE);
-
-    while(1){
-
-        itoa(metronome_bpm, bpm_str, 10);
+	itoa(metronome_bpm, bpm_str, 10);
     
-        metronome_beat_count = metronome_beat_count % BEATLIMIT;
+	metronome_beat_count = metronome_beat_count % BEATLIMIT;
     
-        itoa(metronome_beat_count, beat_count_str, 10);
+	itoa(metronome_beat_count, beat_count_str, 10);
     
-        LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
-        LCD_DrawFullEllipse(100, 220, 50, 35);
+	LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
+	LCD_DrawFullEllipse(100, 220, 50, 35);
     
     
-        LCD_DrawLine(100 + 50, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -1, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -2, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -3, 40, 180, LCD_DIR_VERTICAL);
-        LCD_DrawLine(100 + 50 -4, 40, 180, LCD_DIR_VERTICAL);
+	LCD_DrawLine(100 + 50, 40, 180, LCD_DIR_VERTICAL);
+	LCD_DrawLine(100 + 50 -1, 40, 180, LCD_DIR_VERTICAL);
+	LCD_DrawLine(100 + 50 -2, 40, 180, LCD_DIR_VERTICAL);
+	LCD_DrawLine(100 + 50 -3, 40, 180, LCD_DIR_VERTICAL);
+	LCD_DrawLine(100 + 50 -4, 40, 180, LCD_DIR_VERTICAL);
         
-        LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
+	LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
         
-        LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
-        LCD_DisplayStringLine(LCD_LINE_3, bpm_str);
+	LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
+	LCD_DisplayStringLine(LCD_LINE_3, bpm_str);
         
-        LCD_DisplayStringLine(LCD_LINE_5, beat_text_str);
-        LCD_DisplayStringLine(LCD_LINE_6, beat_count_str);
+	LCD_DisplayStringLine(LCD_LINE_5, beat_text_str);
+	LCD_DisplayStringLine(LCD_LINE_6, beat_count_str);
+}
 
-        sleep(200);
+void ui_task()
+{
+	/* Clear the screen */
+	LCD_Clear(LCD_COLOR_WHITE);
 
-    }
+	while(1) {
+		int cur_mode = mode;
+
+		switch(mode) {
+		    case TUNER_MODE:
+			ui_draw_tuner();
+			break;
+		    case METRONOME_MODE:
+			ui_draw_metronome();
+			break;
+		}
+
+		if(cur_mode != mode) {
+			/* Mode switched */
+			LCD_Clear(LCD_COLOR_WHITE); //Clear the screen
+			sleep(200);
+		}
+	}
 }
 
 void ui_init()
@@ -150,9 +156,4 @@ void ui_init()
     LCD_SetTransparency(0x00);
 
     LCD_SetLayer(LCD_BACKGROUND_LAYER);
-
-    //ui_start_tuner();
-    
-    //ui_start_metronome();
-
 }
