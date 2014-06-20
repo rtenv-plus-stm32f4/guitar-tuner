@@ -191,7 +191,6 @@ void ui_start_tuner()
     
     LCD_DrawLine(30, 200, 180, LCD_DIR_HORIZONTAL);
     LCD_DrawLine(30, 180, 40, LCD_DIR_VERTICAL);
-    //LCD_DrawLine(230, 180, 40, LCD_DIR_VERTICAL);
 
     //draw scale
     for(i = 1; i <= 6; i++){
