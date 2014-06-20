@@ -189,6 +189,13 @@ void SystemInit(void)
   /* FPU settings ------------------------------------------------------------*/
   #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
     SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
+
+	/* Enable floating point extension, and thus state preservation */
+    asm volatile ("mrs  r0, control \t\n"
+                  "orr  r0, %[fpca] \t\n"
+                  "msr  control, r0 \t\n"
+                  :: [fpca] "I" (CONTROL_FPCA)
+                  : "r0");
   #endif
   /* Reset the RCC clock configuration to the default reset state ------------*/
   /* Set HSION bit */

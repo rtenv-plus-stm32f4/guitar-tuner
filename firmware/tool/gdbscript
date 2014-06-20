@@ -3,3 +3,38 @@ file build/main.elf
 target remote :3333
 set debug timestamp on
 set logging on
+
+define print_status
+    if($arg0 == 0)
+        printf "TASK_READY     "
+    end
+    if($arg0 == 1)
+        printf "TASK_WAIT_READ "
+    end
+    if($arg0 == 2)
+        printf "TASK_WAIT_WRITE"
+    end
+    if($arg0 == 3)
+        printf "TASK_WAIT_INTR "
+    end
+    if($arg0 == 4)
+        printf "TASK_WAIT_TIME "
+    end
+end
+
+define ps
+    printf "pid    status            priority\n"
+
+    set $t = tasks
+    set $i = 0
+    while $i != task_count
+        if ($i == current_task)
+            printf "*%2d    ", $t[$i].pid
+        else
+            printf "%3d    ", $t[$i].pid
+        end
+        print_status $t[$i].status
+        printf "%11d\n", $t[$i].priority
+        set $i = $i + 1
+    end
+end

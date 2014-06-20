@@ -83,3 +83,19 @@ lseek:
 	nop
 	pop {r7}
 	bx lr
+.global signal
+signal:
+	push {r7}
+	mov r7, #0xb
+	svc 0
+	nop
+	pop {r7}
+	bx lr
+.global wait
+wait:
+	push {r7}
+	mov r7, #0xc
+	svc 0
+	nop
+	pop {r7}
+	bx lr
