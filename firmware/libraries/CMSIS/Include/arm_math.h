@@ -5857,6 +5857,16 @@ void arm_rfft_fast_f32(
    * @{
    */
 
+ // FIXME: FPU build can not work without GCC optimization
+ static __INLINE float _VSQRTF(float op1)
+ {
+	 float result;
+	 __asm volatile("vsqrt.f32 %0, %1"
+			 : "=w" (result)
+			 : "w" (op1));
+	 return result;
+ }
+
   /**
    * @brief  Floating-point square root function.
    * @param[in]  in     input value.
@@ -5876,7 +5886,8 @@ void arm_rfft_fast_f32(
 #if (__FPU_USED == 1) && defined ( __CC_ARM   )
       *pOut = __sqrtf(in);
 #else
-      *pOut = sqrtf(in);
+	// FIXME: get gcc optimization work without touching inline assembly
+      *pOut = _VSQRTF(in);
 #endif
 
       return (ARM_MATH_SUCCESS);
