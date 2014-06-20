@@ -74,6 +74,7 @@ void ui_draw_beat(int color)
         return;
     }
 
+
     switch(color){
         case GREEN:
             LCD_SetColors(LCD_COLOR_GREEN, LCD_COLOR_GREEN);
@@ -84,13 +85,17 @@ void ui_draw_beat(int color)
     }
 
     LCD_DrawFullCircle(200, 40, 10);
+	ui_start_metronome();
 
 
-    sleep(50);
+
+    sleep(100);
     
     // clear the circle
     LCD_SetColors(LCD_COLOR_WHITE, LCD_COLOR_WHITE);
     LCD_DrawFullCircle(200, 40, 10);
+	ui_start_metronome();
+
 }
 
 void ui_start_tuner()
@@ -112,7 +117,6 @@ void ui_start_tuner()
 
     ui_swap_layer();
 
-    sleep(300);
 }
 
 void ui_start_metronome()
@@ -144,7 +148,6 @@ void ui_start_metronome()
 
     ui_swap_layer();
 
-    sleep(300);
 
 }
 
@@ -171,6 +174,7 @@ void ui_task()
         if(mode == METRONOME_MODE){
             ui_start_metronome();
         }
+	sleep(100);
     }
     
 }
