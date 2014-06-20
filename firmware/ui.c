@@ -13,6 +13,7 @@ static uint8_t bpm_text_str[4] = "BPM";
 static uint8_t beat_text_str[5] = "BEAT";
 static uint8_t bpm_str[4];
 static uint8_t beat_count_str[2];
+static char solmization_char[7] = {'C', 'D', 'E', 'F', 'G', 'A', 'B'};
 
 extern int metronome_bpm;
 extern int metronome_beat_count;
@@ -179,6 +180,15 @@ void ui_touch_detect()
     }
 }
 
+void ui_draw_solmization()
+{
+    int i = 0;
+
+    for(;i < 7; i++){
+        LCD_DisplayChar(LCD_LINE_9, 25 + 30*i, solmization_char[i]);
+    }
+}
+
 void ui_start_tuner()
 {
 
@@ -199,6 +209,8 @@ void ui_start_tuner()
 
     LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
     LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
+
+    ui_draw_solmization();
 
     ui_swap_layer();
 
