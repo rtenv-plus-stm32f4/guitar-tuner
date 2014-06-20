@@ -17,11 +17,6 @@ semaphore_t metronome_sem = 0;
 
 int mode = TUNER_MODE;
 
-void UI_task()
-{
-    ui_init();
-}
-
 void button_task()
 {
 	while(1) {
@@ -50,10 +45,10 @@ void button_init()
 void first()
 {
 	if (!fork()) setpriority(0, 0), pathserver();
-	if (!fork()) setpriority(0, 0), UI_task();
+	if (!fork()) setpriority(0, 1), ui_task();
 
-	if (!fork()) setpriority(0, 2), metronome_task();
-	if (!fork()) setpriority(0, 2), tuner_task();
+	if (!fork()) setpriority(0, 1), metronome_task();
+	if (!fork()) setpriority(0, 1), tuner_task();
 	if (!fork()) setpriority(0, 1), button_task();
 
 	setpriority(0, PRIORITY_LIMIT);
@@ -68,6 +63,7 @@ int main()
 	/* Hardware Initialization */
 	buzzer_init();
 	button_init();
+	ui_init();
 
 	/* Start to schedule */
 	rtenv_start_scheduler(first);

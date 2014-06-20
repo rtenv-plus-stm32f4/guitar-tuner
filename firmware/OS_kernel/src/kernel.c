@@ -1004,6 +1004,9 @@ void rtenv_start_scheduler(void (*start)())
 			}		
 		}
 
+		/* Clear the flag */
+		wait_called = 0;
+
 	        /* Rearrange ready list and event list */
 		event_monitor_serve(&event_monitor);
 
