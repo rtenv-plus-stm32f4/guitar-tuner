@@ -215,7 +215,7 @@ void ui_touch_detect()
             metro_status = !metro_status;
         }
         //easter egg
-        if(TP_State->X > 140 && TP_State->X < 180 && TP_State->Y > 260 && TP_State->Y < 300){
+        if(TP_State->X > 140 && TP_State->X < 180 && TP_State->Y > 240 && TP_State->Y < 300){
             if(metro_status == 1){
                 easter_egg++;
             }else{
@@ -278,6 +278,9 @@ void ui_start_tuner()
 
 void ui_start_metronome()
 {
+    if(metro_status == 0){
+        easter_egg = 0;
+    }
 
     itoa(metronome_bpm, bpm_str, 10);
     
