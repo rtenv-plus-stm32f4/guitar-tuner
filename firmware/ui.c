@@ -259,7 +259,7 @@ void ui_task()
         if(mode == METRONOME_MODE){
             ui_start_metronome();
         }
-        sleep(1);
+        sleep(10);
     }
     
 }
