@@ -96,16 +96,21 @@ void ui_draw_beat(int color)
 void ui_start_tuner()
 {
 
-    int hz = 332;
+    int hz = 332, i = 0;
 
     itoa(hz, frequency_str, 10);
     strcat((char *)frequency_str, (char *)hz_str);
 
     LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
     
-    LCD_DrawLine(20, 200, 200, LCD_DIR_HORIZONTAL);
-    LCD_DrawLine(20, 180, 40, LCD_DIR_VERTICAL);
-    LCD_DrawLine(220, 180, 40, LCD_DIR_VERTICAL);
+    LCD_DrawLine(30, 200, 180, LCD_DIR_HORIZONTAL);
+    LCD_DrawLine(30, 180, 40, LCD_DIR_VERTICAL);
+    //LCD_DrawLine(230, 180, 40, LCD_DIR_VERTICAL);
+
+    //draw scale
+    for(i = 1; i <= 6; i++){
+        LCD_DrawLine(30 + 30*i, 180, 40, LCD_DIR_VERTICAL);
+    }
 
     LCD_DisplayStringLine(LCD_LINE_2, sound[3]);
     LCD_DisplayStringLine(LCD_LINE_3, frequency_str);
