@@ -11,9 +11,11 @@ extern int mode;
 
 void tuner_task()
 {
-	wait(&tuner_sem);
+	//wait(&tuner_sem);
 
 	while(1) {
+		while(mode == METRONOME_MODE);
+
 		if(mode == METRONOME_MODE) {
 			//signal(&metronome_sem);
 			//wait(&tuner_sem);

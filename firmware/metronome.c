@@ -97,6 +97,8 @@ void metronome_task()
 	int cycle_time = 0;
 
 	while(1) {
+		while(mode == TUNER_MODE);
+
 		/* Calculate the beat cycle time */
 		cycle_time = (60 * 1000) / metronome_bpm; /* Cycle time = 1 minute / BPM */
 
