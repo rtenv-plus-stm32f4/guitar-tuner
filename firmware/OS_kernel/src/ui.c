@@ -56,41 +56,17 @@ static uint8_t* itoa(int value, uint8_t* result, int base)
 	return result;
 }
 
-void ui_bfclear()
-{
-	memset((void *) LCD_FRAME_BUFFER + BUFFER_OFFSET, 0xff, BUFFER_OFFSET);
-	//memset((void *) LCD_FRAME_BUFFER, 0xff, BUFFER_OFFSET);
-}
-
-void ui_clear_backbf(){
-	memset((void *) LCD_FRAME_BUFFER + BUFFER_OFFSET, 0xff, BUFFER_OFFSET);
-}
-
-void ui_clear_frontbf(){
-	memset((void *) LCD_FRAME_BUFFER, 0xff, BUFFER_OFFSET);
-}
-
-void ui_clear(void *buffer, int color)
-{
-	memset(buffer, color, BUFFER_OFFSET);
-
-}
-
 void ui_swap_layer()
 {
-    //LTDC_LayerCmd(layer_buffers[hidden_layer].LTDC_Layer, ENABLE);
-    //LTDC_LayerCmd(layer_buffers[show_layer].LTDC_Layer, DISABLE);
     LTDC_LayerAlpha(layer_buffers[hidden_layer].LTDC_Layer, 0xff);
     LTDC_LayerAlpha(layer_buffers[show_layer].LTDC_Layer, 0x00);
     LCD_SetLayer(layer_buffers[show_layer].LCD_Layer);
     LTDC_ReloadConfig(LTDC_IMReload);
-    //ui_clear(layer_buffers[show_layer].buffer, 0xff);
     LCD_Clear(LCD_COLOR_WHITE);
 
     show_layer = !show_layer;
     hidden_layer = !hidden_layer;
 
-    
 }
 
 void ui_draw_beat(int color)
@@ -187,6 +163,8 @@ void ui_init()
 
     LCD_SetLayer(layer_buffers[hidden_layer].LCD_Layer);
     ui_swap_layer();
+
+    mode = METRONOME_MODE;
 
     while(1){
 
