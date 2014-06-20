@@ -71,7 +71,7 @@ void ui_swap_layer()
 
 }
 
-void ui_draw_beat(int color)
+void ui_draw_beat(int color, int delay_time)
 {
     if(mode != METRONOME_MODE){
         return;
@@ -87,15 +87,15 @@ void ui_draw_beat(int color)
             break;
     }
 
-    LCD_DrawFullCircle(200, 40, 10);
+    LCD_DrawFullCircle(205, 40, 15);
     ui_start_metronome();
 
 
-    sleep(100);
+    sleep(delay_time);
     
     // clear the circle
     LCD_SetColors(LCD_COLOR_WHITE, LCD_COLOR_WHITE);
-    LCD_DrawFullCircle(200, 40, 10);
+    LCD_DrawFullCircle(205, 40, 15);
     ui_start_metronome();
 }
 

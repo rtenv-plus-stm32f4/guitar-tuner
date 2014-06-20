@@ -14,6 +14,7 @@ int metronome_bpm = DEFAULT_METRONOME_BPM;
 int metronome_beat_count = DEFAULT_BEAT_CNT;
 int cycle_time = 0;
 int current_beat = 0;
+int beat_draw;
 
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef  TIM_OCInitStructure;
@@ -76,12 +77,18 @@ void beep(int frequency)
 
     switch(frequency){
         case NORMAL_BEEP_FREQ:
-            TIM2->ARR = 999;
+            TIM_TimeBaseStructure.TIM_Period = 1000 - 1; // 1 MHz down to 1 KHz (1 ms)
             break;
         case FIRST_BEEP_FREQ:
-            TIM2->ARR = 499;
+            TIM_TimeBaseStructure.TIM_Period = 500 - 1; // 1 MHz down to 1 KHz (1 ms)
             break;
     }
+
+    //TIM2 reinit
+    TIM_TimeBaseStructure.TIM_Prescaler = 84 - 1; // 24 MHz Clock down to 1 MHz (adjust per your clock)
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
     /* TIM2 enable counter */
     TIM_Cmd(TIM2, ENABLE);
@@ -102,34 +109,17 @@ void metronome_task()
 		/* First beat and beat count is setting as 0 or bigger then 1 */
 		if(current_beat == 0 && metronome_beat_count != 1) {
 			beep(FIRST_BEEP_FREQ);
-			//ui_draw_beat(RED);
+			ui_draw_beat(RED, cycle_time * 9 / 10);
 		} else {
 			beep(NORMAL_BEEP_FREQ);
-			//ui_draw_beat(GREEN);
+			ui_draw_beat(GREEN, cycle_time * 9 / 10);
 		}
 
+		beat_draw = 1;
 		current_beat = (current_beat + 1) % metronome_beat_count;
 		
 		/* Delay for a cycle */
-		sleep(cycle_time);
+		sleep(cycle_time / 10);
 	}
 }
 
-void draw_beat_task()
-{
-	while(1) {
-		while(mode == TUNER_MODE);
-
-		/* First beat and beat count is setting as 0 or bigger then 1 */
-		if(current_beat == 0 && metronome_beat_count != 1) {
-			ui_draw_beat(RED);
-		} else {
-			ui_draw_beat(GREEN);
-		}
-
-		current_beat = (current_beat + 1) % metronome_beat_count;
-		
-		/* Delay for a cycle */
-		sleep(cycle_time);
-	}
-}

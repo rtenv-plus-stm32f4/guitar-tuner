@@ -8,7 +8,7 @@
 // define beat count limit
 #define BEATLIMIT 8
 
-void ui_draw_beat(int color);
+void ui_draw_beat(int color, int delay_time);
 
 void ui_init();
 void ui_task();
