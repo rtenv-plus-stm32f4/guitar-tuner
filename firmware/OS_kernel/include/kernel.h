@@ -6,6 +6,7 @@
 #include "event-monitor.h"
 #include <stddef.h>
 
+void itoa(int n, char *dst, int base);
 void rtenv_start_scheduler();
 
 #endif

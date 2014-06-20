@@ -40,7 +40,6 @@ int fdin;
 void check_keyword();
 void find_events();
 int fill_arg(char *const dest, const char *argv);
-void itoa(int n, char *dst, int base);
 void write_blank(int blank_num);
 
 /* Command handlers. */
