@@ -12,7 +12,6 @@ static uint8_t bpm_text_str[4] = "BPM";
 static uint8_t beat_text_str[5] = "BEAT";
 static uint8_t bpm_str[4];
 static uint8_t beat_count_str[2];
-static uint8_t task_status = TUNER_TASK;
 
 extern int metronome_bpm;
 extern int metronome_beat_count;
@@ -96,7 +95,6 @@ void ui_draw_beat(int color)
 
 void ui_start_tuner()
 {
-    task_status = TUNER_TASK;
 
     int hz = 332;
 
@@ -119,7 +117,6 @@ void ui_start_tuner()
 
 void ui_start_metronome()
 {
-    task_status = METRONOME_TASK;
 
     itoa(metronome_bpm, bpm_str, 10);
     
@@ -163,8 +160,6 @@ void ui_init()
 
     LCD_SetLayer(layer_buffers[hidden_layer].LCD_Layer);
     ui_swap_layer();
-
-    mode = METRONOME_MODE;
 
     while(1){
 
