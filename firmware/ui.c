@@ -98,6 +98,43 @@ void ui_draw_beat(int color)
     ui_start_metronome();
 }
 
+void ui_draw_note()
+{
+    LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
+    LCD_DrawFullEllipse(160, 260, 50, 35);
+    
+    LCD_DrawLine(160 + 50, 80, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(160 + 50 -1, 80, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(160 + 50 -2, 80, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(160 + 50 -3, 80, 180, LCD_DIR_VERTICAL);
+    LCD_DrawLine(160 + 50 -4, 80, 180, LCD_DIR_VERTICAL);
+}
+
+void ui_draw_button()
+{
+    LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
+    LCD_DrawFullRect(70     , 55     , 40, 40);
+    LCD_DrawFullRect(70 + 60, 55     , 40, 40);
+    LCD_DrawFullRect(70     , 55 + 75, 40, 40);
+    LCD_DrawFullRect(70 + 60, 55 + 75, 40, 40);
+
+    LCD_SetColors(LCD_COLOR_YELLOW , LCD_COLOR_YELLOW);
+    //BPM minus
+    LCD_DrawFullRect(70 + 5 , 55 + 15, 30, 10);
+
+    //BPM plus
+    LCD_DrawFullRect(70 + 65, 55 + 15, 30, 10);
+    LCD_DrawFullRect(70 + 75, 55 + 5 , 10, 30);
+
+    //BEAT minus
+    LCD_DrawFullRect(70 + 5 , 55 + 90, 30, 10);
+
+    //BEAT plus
+    LCD_DrawFullRect(70 + 65, 55 + 90, 30, 10);
+    LCD_DrawFullRect(70 + 75, 55 + 80, 10, 30);
+
+}
+
 void TP_Config()
 {
   IOE_Config();
@@ -110,7 +147,34 @@ void ui_touch_detect()
     TP_State = IOE_TP_GetState();
 
     if(TP_State->TouchDetected){
-        LCD_DrawFullCircle(160, 80, 20);
+        //bpm mius
+        if(TP_State->X > 70 && TP_State->X < 70+40 && TP_State->Y > 55 && TP_State->Y < 55 + 40){
+            metronome_bpm--;
+            if(metronome_bpm < 40){
+                metronome_bpm = 208;
+            }
+        }
+        //bpm plus
+        if(TP_State->X > 70+60 && TP_State->X < 70+40+60 && TP_State->Y > 55 && TP_State->Y < 55 + 40){
+            metronome_bpm++;
+            if(metronome_bpm > 208){
+                metronome_bpm = 40;
+            }
+        }
+        //beat minus
+        if(TP_State->X > 70 && TP_State->X < 70+40 && TP_State->Y > 55+75 && TP_State->Y < 55+40+75){
+            metronome_beat_count--;
+            if(metronome_beat_count < 0){
+                metronome_beat_count = 7;
+            }
+        }
+        //beat plus
+        if(TP_State->X > 70+60 && TP_State->X < 70+40+60 && TP_State->Y > 55+75 && TP_State->Y < 55+40+75){
+            metronome_beat_count++;
+            if(metronome_beat_count > 7){
+                metronome_beat_count = 0;
+            }
+        }
     }
 }
 
@@ -149,16 +213,10 @@ void ui_start_metronome()
     
     itoa(metronome_beat_count, beat_count_str, 10);
     
-    LCD_SetColors(LCD_COLOR_BLACK , LCD_COLOR_BLACK);
-    LCD_DrawFullEllipse(100, 220, 50, 35);
-    
-    
-    LCD_DrawLine(100 + 50, 40, 180, LCD_DIR_VERTICAL);
-    LCD_DrawLine(100 + 50 -1, 40, 180, LCD_DIR_VERTICAL);
-    LCD_DrawLine(100 + 50 -2, 40, 180, LCD_DIR_VERTICAL);
-    LCD_DrawLine(100 + 50 -3, 40, 180, LCD_DIR_VERTICAL);
-    LCD_DrawLine(100 + 50 -4, 40, 180, LCD_DIR_VERTICAL);
-        
+    ui_draw_note();
+
+    ui_draw_button();
+
     LCD_SetColors(LCD_COLOR_MAGENTA , LCD_COLOR_WHITE);
         
     LCD_DisplayStringLine(LCD_LINE_2, bpm_text_str);
