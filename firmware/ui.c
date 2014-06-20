@@ -136,6 +136,11 @@ void ui_draw_button()
     LCD_DrawFullRect(70 + 65, 55 + 90, 30, 10);
     LCD_DrawFullRect(70 + 75, 55 + 80, 10, 30);
 
+    //start/stop button
+    LCD_SetColors(LCD_COLOR_BLUE, LCD_COLOR_BLUE);
+    LCD_DrawFullCircle(40, 280, 20);
+    LCD_SetColors(LCD_COLOR_CYAN, LCD_COLOR_CYAN);
+    LCD_DrawFullCircle(40, 280,15 );
 }
 
 void TP_Config()
@@ -177,6 +182,9 @@ void ui_touch_detect()
             if(metronome_beat_count > 7){
                 metronome_beat_count = 0;
             }
+        }
+        //start/stop
+        if(TP_State->X > 20 && TP_State->X < 20+40 && TP_State->Y > 260 && TP_State->Y < 300){
         }
     }
 }
