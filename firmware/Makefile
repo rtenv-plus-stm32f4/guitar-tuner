@@ -27,6 +27,7 @@ CMSIS_PLAT_SRC = $(CMSIS_LIB)/Device/$(VENDOR)/$(PLAT)
 CMSIS_DSP_SRC = $(CMSIS_LIB)/DSP_Lib/Source
 
 DSP_FAST_MATH_SRC = $(CMSIS_DSP_SRC)/FastMathFunctions
+DSP_SUPPORT_FUNC_SRC = $(CMSIS_DSP_SRC)/SupportFunctions
 
 OUTDIR = build
 SRCDIR = ./ \
@@ -50,7 +51,8 @@ SRC = $(wildcard $(addsuffix /*.c,$(SRCDIR))) \
       $(wildcard $(addsuffix /*.S,$(SRCDIR))) \
       $(CMSIS_PLAT_SRC)/Source/Templates/gcc_ride7/startup_stm32f429_439xx.s \
 	  $(DSP_FAST_MATH_SRC)/arm_cos_f32.c \
-	  $(DSP_FAST_MATH_SRC)/arm_sin_f32.c
+	  $(DSP_FAST_MATH_SRC)/arm_sin_f32.c \
+	  $(DSP_SUPPORT_FUNC_SRC)/arm_q15_to_float.c
 
 OBJ := $(addprefix $(OUTDIR)/,$(patsubst %.s,%.o,$(SRC:.c=.o)))
 DEP = $(OBJ:.o=.o.d)

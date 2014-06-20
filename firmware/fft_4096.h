@@ -1,6 +1,8 @@
 #ifndef FFT_4096
 #define FFT_4096
 
+#include <stdint.h>
+
 #define DATA_LENGTH         4096
 #define DATA_LENGTH_MINUS_1 4095
 #define HALF_DATA_LENGTH    2048
@@ -12,6 +14,6 @@ struct cmplx {
 	float real, imag;
 };
 
-int fft_4096( float *data );
+int fft_4096( int16_t *data );
 
 #endif /* FFT_4096 */
