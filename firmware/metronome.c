@@ -67,12 +67,18 @@ void beep(int frequency)
 
     switch(frequency){
         case NORMAL_BEEP_FREQ:
-            TIM2->ARR = 999;
+            TIM_TimeBaseStructure.TIM_Period = 1000 - 1; // 1 MHz down to 1 KHz (1 ms)
             break;
         case FIRST_BEEP_FREQ:
-            TIM2->ARR = 499;
+            TIM_TimeBaseStructure.TIM_Period = 500 - 1; // 1 MHz down to 1 KHz (1 ms)
             break;
     }
+
+    //TIM2 reinit
+    TIM_TimeBaseStructure.TIM_Prescaler = 84 - 1; // 24 MHz Clock down to 1 MHz (adjust per your clock)
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
     /* TIM2 enable counter */
     TIM_Cmd(TIM2, ENABLE);
@@ -84,23 +90,24 @@ void beep(int frequency)
 
 void metronome_task()
 {
-	int current_beat = 0;
-	int cycle_time = 0;
+	int current_beat = 1;
+	//int cycle_time = 0;
 
 	while(1) {
 		/* Calculate the beat cycle time */
-		cycle_time = (60 * 1000) / metronome_bpm; /* Cycle time = 1 minute / BPM */
+		//cycle_time = (60 * 1000) / metronome_bpm; /* Cycle time = 1 minute / BPM */
 
 		/* First beat and beat count is setting as 0 or bigger then 1 */
-		if(current_beat == 0 && metronome_beat_count != 1) {
+        current_beat = !current_beat;
+		if(current_beat) {
 			beep(FIRST_BEEP_FREQ);
 		} else {
 			beep(NORMAL_BEEP_FREQ);
 		}
 
-		current_beat = (current_beat + 1) % metronome_beat_count;
+		//current_beat = (current_beat + 1) % metronome_beat_count;
 		
 		/* Delay for a cycle */
-		sleep(cycle_time);
+		sleep(50);
 	}
 }
