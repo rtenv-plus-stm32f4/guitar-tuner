@@ -93,8 +93,6 @@ void beep(int frequency)
 
 void metronome_task()
 {
-	//wait(&metronome_sem);
-
 	while(1) {
 		while(mode == TUNER_MODE);
 
@@ -114,11 +112,6 @@ void metronome_task()
 		
 		/* Delay for a cycle */
 		sleep(cycle_time);
-
-		if(mode == TUNER_MODE) {
-			//signal(&tuner_sem);
-			//wait(&metronome_sem);
-		}
 	}
 }
 
@@ -138,10 +131,5 @@ void draw_beat_task()
 		
 		/* Delay for a cycle */
 		sleep(cycle_time);
-
-		if(mode == TUNER_MODE) {
-			//signal(&tuner_sem);
-			//wait(&metronome_sem);
-		}
 	}
 }
