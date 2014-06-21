@@ -145,7 +145,8 @@ int main()
 	button_init();
 	ui_init();
 	ADC3_CH13_Config();
-
+	ADC_SoftwareStartConv(ADC3);
+	
 	/* Start to schedule */
 	rtenv_start_scheduler(first);
 	
