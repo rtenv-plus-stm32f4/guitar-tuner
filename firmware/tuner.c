@@ -28,6 +28,6 @@ void tuner_task()
 
 	while(1)
 	{
-		sleep(1);
+		SLEEP(1);
 	}
 }

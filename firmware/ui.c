@@ -101,7 +101,7 @@ void ui_draw_beat(int color, int delay_time)
     ui_start_metronome();
 
 
-    sleep(delay_time);
+    SLEEP(delay_time);
     
     // clear the circle
     LCD_SetColors(LCD_COLOR_WHITE, LCD_COLOR_WHITE);
@@ -387,7 +387,7 @@ void ui_task()
         if(mode == METRONOME_MODE){
             ui_start_metronome();
         }
-        sleep(10);
+        SLEEP(10);
 
         hz++;
     }

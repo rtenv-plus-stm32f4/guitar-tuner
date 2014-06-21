@@ -29,11 +29,11 @@ void button_task()
 	while(1) {
 		/* User press down the button */
 		while(!GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)) {
-			sleep(1);
+			SLEEP(1);
 		}
 		/* User release the button */
 		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)) {
-			sleep(1);
+			SLEEP(1);
 		}
 
 		mode = (mode + 1) % 2;

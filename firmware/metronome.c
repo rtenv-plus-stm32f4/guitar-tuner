@@ -97,7 +97,7 @@ void beep(int frequency)
     /* TIM2 enable counter */
     TIM_Cmd(TIM2, ENABLE);
 
-    sleep(20);
+    SLEEP(20);
 
     TIM_Cmd(TIM2, DISABLE);
 }
@@ -124,7 +124,7 @@ void metronome_task()
 		current_beat = (current_beat + 1) % metronome_beat_count;
 		
 		/* Delay for a cycle */
-		sleep(cycle_time / 10);
+		SLEEP(cycle_time / 10);
 	}
 }
 
