@@ -16,6 +16,7 @@
 
 semaphore_t tuner_sem = 1; //Default mode
 semaphore_t metronome_sem = 0;
+int responseFreq;
 
 int mode = TUNER_MODE;
 

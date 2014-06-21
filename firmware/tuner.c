@@ -10,7 +10,7 @@
 
 #define SAMPLE_RATE	4096
 
-int responseFreq;
+extern int responseFreq;
 
 #include "main.h"
 
@@ -21,13 +21,19 @@ extern int mode;
 
 void tuner_task()
 {
-	extern int16_t test_signal[ DATA_LENGTH ];
+        int num = 0;
+	extern int16_t int_sample[ DATA_LENGTH ];
+        extern uint16_t base;
+        extern uint32_t voltage;
 
-	responseFreq = fft_4096( test_signal );
-	responseFreq += responseFreq;
+        while(1){
+            sleep(1);
+            voltage = base * 3000 / 0xFFFF;
+            int_sample[num++] = voltage;
 
-	while(1)
-	{
-		SLEEP(1);
-	}
+            if(num % 512 == 0)
+                responseFreq = fft_4096( int_sample );
+            if(num == DATA_LENGTH)
+                num = 0;
+        }
 }

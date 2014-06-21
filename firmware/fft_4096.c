@@ -137,6 +137,6 @@ int fft_4096( int16_t *data )
 		}
 	}
 
-	return maxIndex;
+	return (int)(2000 / 2 / 4096 * maxIndex);
 
 }	// end of fft_4096()
